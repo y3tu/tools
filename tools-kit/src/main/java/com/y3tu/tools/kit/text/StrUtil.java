@@ -1,11 +1,15 @@
 package com.y3tu.tools.kit.text;
 
+
 /**
  * 字符串工具类
  *
  * @author y3tu
  */
-public class StrUtil {
+public class StrUtil implements StrPool{
+
+    public static final int INDEX_NOT_FOUND = -1;
+
     /**
      * 字符串是否为空
      * 空的定义:null;"";
@@ -61,11 +65,11 @@ public class StrUtil {
     /**
      * 替换字符串中的指定字符串
      *
-     * @param str 字符串
-     * @param fromIndex 开始位置(包括)
-     * @param searchStr 被查找的字符串
+     * @param str         字符串
+     * @param fromIndex   开始位置(包括) 起始位0
+     * @param searchStr   被查找的字符串
      * @param replacement 被替换的字符串
-     * @param ignoreCase 是否忽略大小写
+     * @param ignoreCase  是否忽略大小写
      * @return 替换后的字符串
      */
     public static String replace(CharSequence str, int fromIndex, CharSequence searchStr, CharSequence replacement, boolean ignoreCase) {
@@ -77,6 +81,69 @@ public class StrUtil {
             replacement = "";
         }
         final int strLength = str.length();
-        return null;
+        final int searchStrLength = searchStr.length();
+        if (fromIndex > strLength) {
+            //如果开始位置大于字符串长度，直接返回原字符串
+            return String.valueOf(str);
+        } else if (fromIndex < 0) {
+            //从位置0开始
+            fromIndex = 0;
+        }
+        StringBuilder result = new StringBuilder(strLength + 16);
+        if (0 != fromIndex) {
+            result.append(str.subSequence(0, fromIndex));
+        }
+        int preIndex = fromIndex;
+        int index;
+        while ((index = indexOf(str, searchStr, preIndex, ignoreCase)) > -1) {
+            result.append(str.subSequence(preIndex, index));
+            result.append(replacement);
+            preIndex = index + searchStrLength;
+        }
+
+        if (preIndex < strLength) {
+            // 结尾部分
+            result.append(str.subSequence(preIndex, strLength));
+        }
+        return result.toString();
+
     }
+
+    /**
+     * 指定范围内查找字符串
+     *
+     * @param str        字符串
+     * @param searchStr  需要查找位置的字符串
+     * @param fromIndex  起始位置 如果小于0，从0开始查找
+     * @param ignoreCase 是否忽略大小写
+     * @return 位置
+     */
+    public static int indexOf(final CharSequence str, CharSequence searchStr, int fromIndex, boolean ignoreCase) {
+        if (str == null || searchStr == null) {
+            return INDEX_NOT_FOUND;
+        }
+        if (fromIndex < 0) {
+            fromIndex = 0;
+        }
+        final int endLimit = str.length() - searchStr.length() + 1;
+        if (fromIndex > endLimit) {
+            return INDEX_NOT_FOUND;
+        }
+        if (searchStr.length() == 0) {
+            return fromIndex;
+        }
+        if (!ignoreCase) {
+            // 不忽略大小写调用JDK方法
+            return str.toString().indexOf(searchStr.toString(), fromIndex);
+        }
+        for (int i = fromIndex; i < endLimit; i++) {
+
+            if (str.toString().regionMatches(true, i, searchStr.toString(), 0, searchStr.length())) {
+                return i;
+            }
+        }
+        return INDEX_NOT_FOUND;
+    }
+
+
 }
