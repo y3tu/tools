@@ -119,6 +119,20 @@ public class DateUtil implements DatePattern {
     }
 
     /**
+     * 日期偏移 根据单元不同加不同值（偏移会修改传入的对象）
+     *
+     * @param time       时间
+     * @param number     偏移量，正数为向后偏移，负数为向前偏移
+     * @param chronoUnit 偏移单位，见{@link ChronoUnit}，不能为null
+     * @return 偏移后的日期时间
+     */
+    public static Date offset(Date time, long number, ChronoUnit chronoUnit) {
+        LocalDateTime localDateTime = dateToLdt(time);
+        LocalDateTime offsetTime = offset(localDateTime, number, chronoUnit);
+        return ldtToDate(offsetTime);
+    }
+
+    /**
      * 日期偏移,根据单元不同加不同值（偏移会修改传入的对象）
      *
      * @param time       {@link LocalDateTime}

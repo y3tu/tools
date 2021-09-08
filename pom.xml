@@ -14,6 +14,7 @@
 
     <modules>
         <module>tools-kit</module>
+        <module>tools-web</module>
     </modules>
 
     <properties>
