@@ -17,7 +17,6 @@ public class TimeInterval implements Serializable {
     protected final Map<String, Long> groupMap;
     private static final String DEFAULT_ID = "";
 
-
     /**
      * 构造
      *
