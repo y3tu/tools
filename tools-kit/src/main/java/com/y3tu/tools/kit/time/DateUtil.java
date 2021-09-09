@@ -90,14 +90,15 @@ public class DateUtil implements DatePattern {
     /**
      * 获取两个时间之间的差值
      *
-     * @param startTime  开始时间
-     * @param endTime    结束时间
-     * @param chronoUnit 差值的单位 年月日时分秒毫秒
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @param dateUnit  差值的单位 年月日时分秒毫秒
      * @return
      */
-    public static long between(LocalDateTime startTime, LocalDateTime endTime, ChronoUnit chronoUnit) {
+    public static long between(LocalDateTime startTime, LocalDateTime endTime, DateUnit dateUnit) {
         Duration duration = Duration.between(startTime, endTime);
         Period period = Period.between(LocalDate.from(startTime), LocalDate.from(endTime));
+        ChronoUnit chronoUnit = DateUnit.toChronoUnit(dateUnit);
         switch (chronoUnit) {
             case YEARS:
                 return period.getYears();
@@ -121,30 +122,30 @@ public class DateUtil implements DatePattern {
     /**
      * 日期偏移 根据单元不同加不同值（偏移会修改传入的对象）
      *
-     * @param time       时间
-     * @param number     偏移量，正数为向后偏移，负数为向前偏移
-     * @param chronoUnit 偏移单位，见{@link ChronoUnit}，不能为null
+     * @param time     时间
+     * @param number   偏移量，正数为向后偏移，负数为向前偏移
+     * @param dateUnit 偏移单位，不能为null
      * @return 偏移后的日期时间
      */
-    public static Date offset(Date time, long number, ChronoUnit chronoUnit) {
+    public static Date offset(Date time, long number, DateUnit dateUnit) {
         LocalDateTime localDateTime = dateToLdt(time);
-        LocalDateTime offsetTime = offset(localDateTime, number, chronoUnit);
+        LocalDateTime offsetTime = offset(localDateTime, number, dateUnit);
         return ldtToDate(offsetTime);
     }
 
     /**
      * 日期偏移,根据单元不同加不同值（偏移会修改传入的对象）
      *
-     * @param time       {@link LocalDateTime}
-     * @param number     偏移量，正数为向后偏移，负数为向前偏移
-     * @param chronoUnit 偏移单位，见{@link ChronoUnit}，不能为null
+     * @param time     {@link LocalDateTime}
+     * @param number   偏移量，正数为向后偏移，负数为向前偏移
+     * @param dateUnit 偏移单位，见{@link ChronoUnit}，不能为null
      * @return 偏移后的日期时间
      */
-    public static LocalDateTime offset(LocalDateTime time, long number, ChronoUnit chronoUnit) {
+    public static LocalDateTime offset(LocalDateTime time, long number, DateUnit dateUnit) {
         if (null == time) {
             return null;
         }
-        return time.plus(number, chronoUnit);
+        return time.plus(number, DateUnit.toChronoUnit(dateUnit));
     }
 
 }

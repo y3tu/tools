@@ -6,7 +6,7 @@ package com.y3tu.tools.kit.text;
  *
  * @author y3tu
  */
-public class StrUtil implements StrPool{
+public class StrUtil implements StrPool {
 
     public static final int INDEX_NOT_FOUND = -1;
 
@@ -143,6 +143,43 @@ public class StrUtil implements StrPool{
             }
         }
         return INDEX_NOT_FOUND;
+    }
+
+    /**
+     * 重复某个字符串
+     *
+     * @param str   被重复的字符
+     * @param count 重复的数目
+     * @return 重复字符字符串
+     */
+    public static String repeat(CharSequence str, int count) {
+        if (null == str) {
+            return null;
+        }
+        if (count <= 0 || str.length() == 0) {
+            return "";
+        }
+        if (count == 1) {
+            return str.toString();
+        }
+
+        // 检查
+        final int len = str.length();
+        final long longSize = (long) len * (long) count;
+        final int size = (int) longSize;
+        if (size != longSize) {
+            throw new ArrayIndexOutOfBoundsException("Required String length is too large: " + longSize);
+        }
+
+        final char[] array = new char[size];
+        str.toString().getChars(0, len, array, 0);
+        int n;
+        for (n = len; n < size - n; n <<= 1) {
+            // n <<= 1相当于n *2
+            System.arraycopy(array, 0, array, n, n);
+        }
+        System.arraycopy(array, 0, array, n, size - n);
+        return new String(array);
     }
 
 
