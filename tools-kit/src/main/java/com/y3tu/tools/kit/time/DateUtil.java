@@ -148,4 +148,26 @@ public class DateUtil implements DatePattern {
         return time.plus(number, DateUnit.toChronoUnit(dateUnit));
     }
 
+    /**
+     * 计时器<br>
+     * 计算某个过程花费的时间，精确到毫秒
+     *
+     * @return Timer
+     */
+    public static TimeInterval timer() {
+        return new TimeInterval();
+
+    }
+
+    /**
+     * 计时器<br>
+     * 计算某个过程花费的时间，精确到毫秒
+     *
+     * @param isNano 是否使用纳秒计数，false则使用毫秒
+     * @return Timer
+     */
+    public static TimeInterval timer(boolean isNano) {
+        return new TimeInterval(isNano);
+    }
+
 }

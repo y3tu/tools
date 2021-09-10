@@ -15,16 +15,25 @@
     <description>tools kit</description>
 
     <properties>
-        <slf4j-api-version>1.7.25</slf4j-api-version>
+        <slf4j-api.version>1.7.25</slf4j-api.version>
+        <ip2region.version>1.7.2</ip2region.version>
     </properties>
 
     <dependencies>
+
         <!--slf4j-api -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j-api-version}</version>
+            <version>${slf4j-api.version}</version>
             <optional>true</optional>
+        </dependency>
+
+        <!--ip工具-->
+        <dependency>
+            <groupId>org.lionsoul</groupId>
+            <artifactId>ip2region</artifactId>
+            <version>${ip2region.version}</version>
         </dependency>
 
     </dependencies>

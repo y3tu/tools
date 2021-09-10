@@ -1,6 +1,8 @@
 package com.y3tu.tools.kit.concurrent.thread;
 
 import com.y3tu.tools.kit.concurrent.SyncFinisher;
+import com.y3tu.tools.kit.time.DateUnit;
+import com.y3tu.tools.kit.time.DateUtil;
 import com.y3tu.tools.kit.time.TimeInterval;
 
 /**
@@ -24,7 +26,7 @@ public class ConcurrencyTester {
 
     public ConcurrencyTester(int threadSize) {
         this.sf = new SyncFinisher(threadSize);
-        this.timeInterval = new TimeInterval();
+        this.timeInterval = DateUtil.timer();
     }
 
     /**
