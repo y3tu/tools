@@ -38,7 +38,7 @@ public class Console {
      * @param template 文本模板，被替换的部分用 {} 表示
      * @param values   值
      */
-    private static void print(String template, Object... values) {
+    public static void print(String template, Object... values) {
         String str = String.format(template, values);
         out.print(str);
     }

@@ -182,5 +182,31 @@ public class StrUtil implements StrPool {
         return new String(array);
     }
 
+    /**
+     * 去掉字符串指定前缀
+     *
+     * @param str        字符串
+     * @param prefix     前缀
+     * @param ignoreCase 是否忽略大小写
+     * @return 切掉后的字符串，若前缀不是 prefix， 返回原字符串
+     */
+    public static String removePrefix(CharSequence str, CharSequence prefix, boolean ignoreCase) {
+        if (isEmpty(str) || isEmpty(prefix)) {
+            return String.valueOf(str);
+        }
+        final String str2 = str.toString();
+        if (ignoreCase) {
+            //忽略大小写
+            if (str2.toLowerCase().startsWith(prefix.toString().toLowerCase())) {
+                // 截取后半段
+                return str2.substring(prefix.length());
+            }
+        } else {
+            if (str2.startsWith(prefix.toString())) {
+                return str2.substring(prefix.length());
+            }
+        }
+        return str2;
+    }
 
 }

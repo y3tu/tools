@@ -30,4 +30,14 @@ public class StrUtilTest {
         Assert.assertEquals("abxxxfg", resultStr);
 
     }
+
+    /**
+     * 去掉字符串指定前缀
+     */
+    @Test
+    public void removePrefix() {
+        String str = "abcDefg";
+        String resultStr = StrUtil.removePrefix(str, "abcd", true);
+        Assert.assertEquals("efg", resultStr);
+    }
 }
