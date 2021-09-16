@@ -207,4 +207,20 @@ public interface StrPool {
      * 字符串常量：空 JSON {@code "{}"}
      */
     String EMPTY_JSON = "{}";
+
+    /**
+     * 字符串常量：{@code "null"} <br>
+     * 注意：{@code "null" != null}
+     */
+    public static final String NULL = "null";
+
+    /**
+     * 字符串常量：空字符串 {@code ""}
+     */
+    public static final String EMPTY = "";
+
+    /**
+     * 字符串常量：空格符 {@code " "}
+     */
+    public static final String SPACE = " ";
 }
