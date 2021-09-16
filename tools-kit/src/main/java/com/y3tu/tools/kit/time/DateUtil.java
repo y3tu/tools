@@ -116,7 +116,7 @@ public class DateUtil implements DatePattern {
      * @param startTime 开始时间
      * @param endTime   结束时间
      * @param dateUnit  差值的单位 年月日时分秒毫秒
-     * @return
+     * @return 差值
      */
     public static long between(LocalDateTime startTime, LocalDateTime endTime, DateUnit dateUnit) {
         Duration duration = Duration.between(startTime, endTime);

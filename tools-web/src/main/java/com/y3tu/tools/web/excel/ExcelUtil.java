@@ -80,7 +80,7 @@ public class ExcelUtil {
      * @param header        自定义表格头
      * @param excelTypeEnum excel文件类型
      * @param outputStream  输出流
-     * @return
+     * @return {@link ExcelWriter}
      */
     public static ExcelWriter buildExcelWriter(String fileName, Class clazz, List<List<String>> header, ExcelTypeEnum excelTypeEnum, OutputStream outputStream) {
         try {
@@ -101,13 +101,13 @@ public class ExcelUtil {
     /**
      * 浏览器导出文件
      *
-     * @param fileName
-     * @param sheetName
-     * @param clazz
-     * @param header
-     * @param excelTypeEnum
-     * @param excelPageData
-     * @param response
+     * @param fileName      文件名
+     * @param sheetName     sheet页名称
+     * @param clazz         导出类型
+     * @param header        表头
+     * @param excelTypeEnum excel类型
+     * @param excelPageData 数据
+     * @param response      响应
      */
     public static void downExcelByPage(String fileName, String sheetName, Class clazz, List<List<String>> header, ExcelTypeEnum excelTypeEnum, ExcelPageData excelPageData, HttpServletResponse response) {
         try {

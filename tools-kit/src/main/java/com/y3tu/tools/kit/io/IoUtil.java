@@ -145,6 +145,7 @@ public class IoUtil {
      * @param prefix 文件名前缀
      * @param suffix 文件名后缀
      * @return 文件路径
+     * @throws IOException io异常
      * @see Files#createTempFile
      */
     public static Path createTempFile(String prefix, String suffix) throws IOException {

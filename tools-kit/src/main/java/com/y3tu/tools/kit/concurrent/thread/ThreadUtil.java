@@ -77,7 +77,7 @@ public class ThreadUtil {
 
     /**
      * 获得一个新的线程池<br>
-     * 如果maximumPoolSize >= corePoolSize，在没有新任务加入的情况下，多出的线程将最多保留60s
+     * 如果maximumPoolSize大于等于corePoolSize，在没有新任务加入的情况下，多出的线程将最多保留60s
      *
      * @param corePoolSize    初始线程池大小
      * @param maximumPoolSize 最大线程池大小
@@ -184,7 +184,7 @@ public class ThreadUtil {
      *
      * @param size          线程池大小
      * @param threadFactory 自定义线程创建器
-     * @return
+     * @return {@link ExecutorService}
      */
     public static ExecutorService newFixedExecutor(int size, ThreadFactory threadFactory) {
         return ExecutorBuilder.create()
@@ -197,9 +197,9 @@ public class ThreadUtil {
     /**
      * 创建固定大小的线程池
      *
-     * @param size
+     * @param size   线程池大小
      * @param prefix 线程名前缀
-     * @return
+     * @return {@link ExecutorService}
      */
     public static ExecutorService newFixedExecutor(int size, String prefix) {
         ThreadFactory threadFactory = ThreadUtil.newNamedThreadFactory(prefix, false);
@@ -211,7 +211,7 @@ public class ThreadUtil {
      *
      * @param corePoolSize  初始线程池大小
      * @param threadFactory 自定义线程创建器
-     * @return
+     * @return {@link ScheduledExecutorService}
      */
     public static ScheduledExecutorService newScheduledExecutor(int corePoolSize, ThreadFactory threadFactory) {
         return (ScheduledExecutorService) ExecutorBuilder.create()

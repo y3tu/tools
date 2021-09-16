@@ -11,7 +11,6 @@ import java.util.function.Supplier;
 public class Assert {
     /**
      * 断言是否为真，如果为false抛出给定的异常
-     * Assert.isTrue(i < 0, IllegalArgumentException::new);
      *
      * @param <X>        异常类型
      * @param expression 布尔值
@@ -26,7 +25,6 @@ public class Assert {
 
     /**
      * 断言是否为真，如果为false抛出IllegalArgumentException异常
-     * Assert.isTrue(i < 0, "The value must be greater than zero");
      *
      * @param expression       布尔值
      * @param errorMsgTemplate 错误抛出异常附带的消息模板，变量用{}代替
