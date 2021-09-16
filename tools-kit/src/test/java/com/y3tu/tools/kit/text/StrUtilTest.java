@@ -40,4 +40,13 @@ public class StrUtilTest {
         String resultStr = StrUtil.removePrefix(str, "abcd", true);
         Assert.assertEquals("efg", resultStr);
     }
+
+    @Test
+    public void containsAny() {
+        String str = "abcde";
+        boolean flag = StrUtil.containsAny(str,"fd");
+        Assert.assertFalse(flag);
+        flag = StrUtil.containsAny(str,"cd");
+        Assert.assertTrue(flag);
+    }
 }

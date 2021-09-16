@@ -1,10 +1,10 @@
 package com.y3tu.tools.kit.time;
 
+import com.y3tu.tools.kit.lang.Console;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 
@@ -37,6 +37,9 @@ public class DateUtilTest {
         Assert.assertEquals(6, month);
     }
 
+    /**
+     * 时间偏移测试
+     */
     @Test
     public void offset() {
         String dateStr = "2021-01-01 12:12:12";
@@ -46,4 +49,21 @@ public class DateUtilTest {
         dateStr = DateUtil.dateToStr(date, DateUtil.NORM_DATETIME_PATTERN);
         Assert.assertEquals("2021-01-01 12:11:12", dateStr);
     }
+
+    @Test
+    public void formatFriendlyTimeSpanByNow() {
+        String strDate = "2021-09-16 14:57:22";
+        long timeMillis = DateUtil.strToDate(strDate, DateUtil.NORM_DATETIME_PATTERN).getTime();
+        Console.print(DateUtil.formatFriendlyTimeSpanByNow(timeMillis));
+    }
+
+    @Test
+    public void beginOfMonth() {
+        String strDate = "2021-09-16 14:57:22";
+        LocalDateTime localDateTime = DateUtil.strToLdt(strDate, DateUtil.NORM_DATETIME_PATTERN);
+        Console.print(DateUtil.LdtToStr(DateUtil.beginOfMonth(localDateTime), DateUtil.NORM_DATETIME_PATTERN));
+        Console.print(DateUtil.LdtToStr(DateUtil.endOfMonth(localDateTime), DateUtil.NORM_DATETIME_PATTERN));
+
+    }
+
 }

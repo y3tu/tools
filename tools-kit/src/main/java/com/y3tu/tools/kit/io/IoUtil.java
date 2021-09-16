@@ -6,9 +6,12 @@ import com.y3tu.tools.kit.lang.Assert;
 import java.io.Closeable;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * IO流工具类
@@ -112,4 +115,41 @@ public class IoUtil {
         }
         return total;
     }
+
+    /**
+     * 判断文件夹是否存在
+     *
+     * @param path 文件夹路径
+     * @return 文件夹是否存在
+     */
+    public static boolean isDirExists(Path path) {
+        return path != null && Files.exists(path) && Files.isDirectory(path);
+    }
+
+    /**
+     * 判断文件是否存在
+     *
+     * @param path 文件路径
+     * @return 文件是否存在
+     */
+    public static boolean isFileExists(Path path) {
+        if (path == null) {
+            return false;
+        }
+        return Files.exists(path) && Files.isRegularFile(path);
+    }
+
+    /**
+     * 在临时目录创建临时文件，命名为${prefix}${random.nextLong()}${suffix}
+     *
+     * @param prefix 文件名前缀
+     * @param suffix 文件名后缀
+     * @return 文件路径
+     * @see Files#createTempFile
+     */
+    public static Path createTempFile(String prefix, String suffix) throws IOException {
+        return Files.createTempFile(prefix, suffix);
+    }
+
+
 }

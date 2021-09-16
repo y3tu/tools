@@ -1,6 +1,8 @@
 package com.y3tu.tools.kit.text;
 
 
+import com.y3tu.tools.kit.collection.ArrayUtil;
+
 /**
  * 字符串工具类
  *
@@ -209,4 +211,42 @@ public class StrUtil implements StrPool {
         return str2;
     }
 
+    /**
+     * 查找指定字符串是否包含指定字符串列表中的任意一个字符串
+     *
+     * @param str     字符串
+     * @param testStr 检查的字符
+     * @return 是否包含
+     */
+    public static boolean containsAny(CharSequence str, CharSequence... testStr) {
+        if (isEmpty(str) || ArrayUtil.isEmpty(testStr)) {
+            return false;
+        }
+        for (CharSequence checkStr : testStr) {
+            if (str.toString().contains(checkStr)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 查找指定字符串是否包含指定字符串列表中的任意一个字符串
+     * 忽略大小写
+     *
+     * @param str     字符串
+     * @param testStr 检查的字符
+     * @return 是否包含
+     */
+    public static boolean containsAnyIgnoreCase(CharSequence str, CharSequence... testStr) {
+        if (isEmpty(str) || ArrayUtil.isEmpty(testStr)) {
+            return false;
+        }
+        for (CharSequence checkStr : testStr) {
+            if (str.toString().toLowerCase().contains(checkStr.toString().toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

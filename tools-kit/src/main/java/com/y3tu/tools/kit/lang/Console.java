@@ -40,7 +40,7 @@ public class Console {
      */
     public static void print(String template, Object... values) {
         String str = String.format(template, values);
-        out.print(str);
+        out.println(str);
     }
 
 }
