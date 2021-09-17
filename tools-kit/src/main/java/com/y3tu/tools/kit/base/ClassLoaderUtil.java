@@ -2,7 +2,6 @@ package com.y3tu.tools.kit.base;
 
 import com.y3tu.tools.kit.exception.ToolException;
 
-import javax.tools.Tool;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
