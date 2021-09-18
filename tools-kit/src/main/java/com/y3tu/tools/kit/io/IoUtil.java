@@ -4,6 +4,7 @@ import com.y3tu.tools.kit.exception.ToolException;
 import com.y3tu.tools.kit.lang.Assert;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -152,5 +153,18 @@ public class IoUtil {
         return Files.createTempFile(prefix, suffix);
     }
 
+    /**
+     * 文件转为{@link FileInputStream}
+     *
+     * @param file 文件
+     * @return {@link FileInputStream}
+     */
+    public static FileInputStream toStream(File file) {
+        try {
+            return new FileInputStream(file);
+        } catch (Exception e) {
+            throw new ToolException(e);
+        }
+    }
 
 }

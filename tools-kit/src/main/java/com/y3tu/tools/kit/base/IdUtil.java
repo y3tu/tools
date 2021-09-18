@@ -13,6 +13,8 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class IdUtil {
 
+    private static Snowflake snowflake = new Snowflake(1, 1, 1);
+
     /**
      * 获取随机UUID
      *
@@ -48,7 +50,7 @@ public class IdUtil {
      * @return id
      */
     public static long nextId() {
-        return new Snowflake(1L, 1L, 1L).nextId();
+        return snowflake.nextId();
     }
 
 }

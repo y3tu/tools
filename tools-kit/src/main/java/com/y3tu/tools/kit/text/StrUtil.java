@@ -65,6 +65,27 @@ public class StrUtil implements StrPool {
     }
 
     /**
+     * 当给定字符串为null时，转换为Empty
+     *
+     * @param str 被转换的字符串
+     * @return 转换后的字符串
+     */
+    public static String nullToEmpty(CharSequence str) {
+        return nullToDefault(str, EMPTY);
+    }
+
+    /**
+     * 如果字符串是null，则返回指定默认字符串，否则返回字符串本身。
+     *
+     * @param str        要转换的字符串
+     * @param defaultStr 默认字符串
+     * @return 字符串本身或指定的默认字符串
+     */
+    public static String nullToDefault(CharSequence str, String defaultStr) {
+        return (str == null) ? defaultStr : str.toString();
+    }
+
+    /**
      * 替换字符串中的指定字符串
      *
      * @param str         字符串

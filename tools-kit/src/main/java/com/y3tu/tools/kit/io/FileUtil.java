@@ -2,6 +2,7 @@ package com.y3tu.tools.kit.io;
 
 import com.y3tu.tools.kit.collection.ArrayUtil;
 import com.y3tu.tools.kit.exception.ToolException;
+import com.y3tu.tools.kit.text.StrUtil;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -129,5 +130,17 @@ public class FileUtil {
         }
     }
 
-
+    /**
+     * 判断路径是否是绝对路径
+     *
+     * @param path 路径
+     * @return 是否绝对路径
+     */
+    public static boolean isAbsolutePath(String path) {
+        if (StrUtil.isEmpty(path)) {
+            return false;
+        }
+        // 给定的路径已经是绝对路径了
+        return StrUtil.C_SLASH == path.charAt(0) || path.matches("^[a-zA-Z]:([/\\\\].*)?");
+    }
 }
