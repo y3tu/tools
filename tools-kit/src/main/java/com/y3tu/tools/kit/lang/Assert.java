@@ -94,4 +94,21 @@ public class Assert {
         return notNull(object, () -> new IllegalArgumentException(String.format(errorMsgTemplate, params)));
     }
 
+    /**
+     * 断言对象是否不为{@code null} ，如果为{@code null} 抛出{@link IllegalArgumentException} 异常
+     *
+     * <pre class="code">
+     * Assert.notNull(clazz);
+     * </pre>
+     *
+     * @param <T>    被检查对象类型
+     * @param object 被检查对象
+     * @return 非空对象
+     * @throws IllegalArgumentException if the object is {@code null}
+     */
+    public static <T> T notNull(T object) throws IllegalArgumentException {
+        return notNull(object, "[Assertion failed] - this argument is required; it must not be null");
+    }
+
+
 }

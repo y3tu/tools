@@ -19,7 +19,7 @@ public class Snowflake {
      */
     private long sequence;
 
-    public Snowflake(long workerId, long datacenterId, long sequence) {
+    public Snowflake(int workerId, int datacenterId, int sequence) {
         // sanity check for workerId
         if (workerId > maxWorkerId || workerId < 0) {
             throw new IllegalArgumentException(String.format("worker Id can't be greater than %d or less than 0", maxWorkerId));

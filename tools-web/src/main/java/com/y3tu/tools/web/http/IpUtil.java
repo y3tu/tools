@@ -1,10 +1,20 @@
-package com.y3tu.tools.kit.http;
+package com.y3tu.tools.web.http;
 
+import com.y3tu.tools.kit.exception.ExceptionUtil;
+import com.y3tu.tools.kit.exception.ToolException;
+import com.y3tu.tools.kit.io.FileUtil;
+import com.y3tu.tools.kit.io.ResourceUtil;
+import com.y3tu.tools.kit.lang.Validator;
+import com.y3tu.tools.kit.regex.RegexUtil;
 import com.y3tu.tools.kit.system.SystemUtil;
+import org.lionsoul.ip2region.DataBlock;
+import org.lionsoul.ip2region.DbConfig;
+import org.lionsoul.ip2region.DbSearcher;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.io.*;
+import java.lang.reflect.Method;
+import java.net.*;
 
 /**
  * ip工具类
@@ -13,6 +23,9 @@ import java.net.UnknownHostException;
  */
 public class IpUtil {
 
+    /**
+     * 临时存放ip配置文件路径
+     */
     public static String ipFileTempPath = SystemUtil.get(SystemUtil.TMPDIR) + "ip2region.db";
 
 
@@ -62,8 +75,26 @@ public class IpUtil {
      * @param ip ip
      * @return ip所在区域
      */
-    public static String getCityInfoByIp(String ip) {
+    public static String getRegion(String ip) {
+        try {
+            File file = new File(ipFileTempPath);
+            if (!file.exists()) {
+                //如果文件不存在
+                InputStream inputStream = ResourceUtil.getStream("ip2region/ip2region.db");
+                file = FileUtil.writeFromStream(file, inputStream, true);
+            }
+            DbConfig config = new DbConfig();
+            DbSearcher searcher = new DbSearcher(config, file.getPath());
+            Method method = searcher.getClass().getMethod("btreeSearch", String.class);
 
-        return "";
+            DataBlock dataBlock = null;
+            if (!Validator.isMatchRegex(RegexUtil.IPV4, ip)) {
+                throw new ToolException("ip地址异常");
+            }
+            dataBlock = (DataBlock) method.invoke(searcher, ip);
+            return dataBlock.getRegion();
+        } catch (Exception e) {
+            throw new ToolException("获取ip归属区域异常," + ExceptionUtil.getFormatMessage(e), e);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.y3tu.tools.kit.base;
 
+import com.y3tu.tools.kit.lang.Singleton;
 import com.y3tu.tools.kit.lang.Snowflake;
 import com.y3tu.tools.kit.text.StrUtil;
 
@@ -12,8 +13,6 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author y3tu
  */
 public class IdUtil {
-
-    private static Snowflake snowflake = new Snowflake(1, 1, 1);
 
     /**
      * 获取随机UUID
@@ -50,7 +49,7 @@ public class IdUtil {
      * @return id
      */
     public static long nextId() {
-        return snowflake.nextId();
+        return Singleton.get(Snowflake.class, 1, 1, 1).nextId();
     }
 
 }

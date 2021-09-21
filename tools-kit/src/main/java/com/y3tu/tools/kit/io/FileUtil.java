@@ -4,9 +4,7 @@ import com.y3tu.tools.kit.collection.ArrayUtil;
 import com.y3tu.tools.kit.exception.ToolException;
 import com.y3tu.tools.kit.text.StrUtil;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -142,5 +140,95 @@ public class FileUtil {
         }
         // 给定的路径已经是绝对路径了
         return StrUtil.C_SLASH == path.charAt(0) || path.matches("^[a-zA-Z]:([/\\\\].*)?");
+    }
+
+    /**
+     * 创建文件夹
+     *
+     * @param dirPath 文件夹路径
+     * @return 创建的目录
+     */
+    public static File mkdir(String dirPath) {
+        if (dirPath == null) {
+            return null;
+        }
+        final File dir = new File(dirPath);
+        return mkdir(dir);
+    }
+
+    /**
+     * 创建文件夹，会递归自动创建其不存在的父文件夹，如果存在直接返回此文件夹<br>
+     *
+     * @param dir 目录
+     * @return 创建的目录
+     */
+    public static File mkdir(File dir) {
+        if (dir == null) {
+            return null;
+        }
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        return dir;
+    }
+
+    /**
+     * 创建所给文件或目录的父目录
+     *
+     * @param file 文件或目录
+     * @return 父目录
+     */
+    public static File mkParentDirs(File file) {
+        if (null == file) {
+            return null;
+        }
+        return mkdir(file.getParentFile());
+    }
+
+    /**
+     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件<br>
+     * 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
+     *
+     * @param file 文件对象
+     * @return 文件，若路径为null，返回null
+     */
+    public static File touch(File file) {
+        if (null == file) {
+            return null;
+        }
+        if (!file.exists()) {
+            mkParentDirs(file);
+            try {
+                file.createNewFile();
+            } catch (Exception e) {
+                throw new ToolException(e);
+            }
+        }
+        return file;
+    }
+
+    /**
+     * 将流的内容写入文件
+     *
+     * @param destFile  目标文件
+     * @param in        输入流
+     * @param isCloseIn 是否关闭输入流
+     * @return destFile
+     */
+    public static File writeFromStream(File destFile, InputStream in, boolean isCloseIn) {
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(touch(destFile));
+            IoUtil.copy(in, out, null);
+
+        } catch (Exception e) {
+            throw new ToolException(e);
+        } finally {
+            IoUtil.close(out);
+            if (isCloseIn) {
+                IoUtil.close(in);
+            }
+        }
+        return destFile;
     }
 }

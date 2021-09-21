@@ -89,18 +89,15 @@ public class IoUtil {
         }
         long total = 0;
         try {
-            int numToRead = DEFAULT_BUFFER_SIZE;
             int read;
             byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-            while (numToRead > 0) {
-                read = in.read(buffer, 0, numToRead);
+            while (true) {
+                read = in.read(buffer, 0, DEFAULT_BUFFER_SIZE);
                 if (read < 0) {
                     // 提前读取到末尾
                     break;
                 }
                 out.write(buffer, 0, read);
-
-                numToRead -= read;
                 total += read;
                 if (null != progress) {
                     progress.progress(total);
