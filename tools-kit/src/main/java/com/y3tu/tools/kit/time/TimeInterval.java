@@ -120,7 +120,7 @@ public class TimeInterval implements Serializable {
      */
     public long interval(String id, DateUnit dateUnit) {
         final long intervalMs = isNano ? interval(id) / 1000000L : interval(id);
-        if (DateUnit.MS == dateUnit) {
+        if (DateUnit.MILLISECOND == dateUnit) {
             return intervalMs;
         }
         return intervalMs / dateUnit.getMillis();
@@ -133,7 +133,7 @@ public class TimeInterval implements Serializable {
      * @return 从开始到当前的间隔时间（毫秒数）
      */
     public long intervalMs(String id) {
-        return interval(id, DateUnit.MS);
+        return interval(id, DateUnit.MILLISECOND);
     }
 
     /**

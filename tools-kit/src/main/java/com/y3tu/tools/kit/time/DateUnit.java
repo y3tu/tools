@@ -1,6 +1,9 @@
 package com.y3tu.tools.kit.time;
 
+import com.y3tu.tools.kit.exception.ToolException;
+
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 日期时间单位，每个单位都是以毫秒为基数
@@ -11,7 +14,7 @@ public enum DateUnit {
     /**
      * 一毫秒
      */
-    MS(1),
+    MILLISECOND(1),
     /**
      * 一秒的毫秒数
      */
@@ -71,8 +74,8 @@ public enum DateUnit {
      */
     public static DateUnit of(ChronoUnit unit) {
         switch (unit) {
-            case MICROS:
-                return DateUnit.MS;
+            case MILLIS:
+                return DateUnit.MILLISECOND;
             case SECONDS:
                 return DateUnit.SECOND;
             case MINUTES:
@@ -88,7 +91,7 @@ public enum DateUnit {
             case YEARS:
                 return DateUnit.YEAR;
             default:
-                return null;
+                throw new ToolException("无法找到对应的时间单位转换！");
         }
     }
 
@@ -100,8 +103,8 @@ public enum DateUnit {
      */
     public static ChronoUnit toChronoUnit(DateUnit unit) {
         switch (unit) {
-            case MS:
-                return ChronoUnit.MICROS;
+            case MILLISECOND:
+                return ChronoUnit.MILLIS;
             case SECOND:
                 return ChronoUnit.SECONDS;
             case MINUTE:
@@ -117,7 +120,64 @@ public enum DateUnit {
             case YEAR:
                 return ChronoUnit.YEARS;
             default:
-                return null;
+                throw new ToolException("无法找到对应的时间单位转换！");
         }
     }
+
+    /**
+     * 单位兼容转换，将DateUnit转换为对应的{@link TimeUnit}
+     *
+     * @return {@link TimeUnit}
+     */
+    public TimeUnit toTimeUnit() {
+        return DateUnit.toTimeUnit(this);
+    }
+
+    /**
+     * 单位兼容转换，将{@link ChronoUnit}转换为对应的DateUnit
+     *
+     * @param unit {@link ChronoUnit}
+     * @return DateUnit，null表示不支持此单位
+     */
+    public static DateUnit of(TimeUnit unit) {
+        switch (unit) {
+            case MILLISECONDS:
+                return DateUnit.MILLISECOND;
+            case SECONDS:
+                return DateUnit.SECOND;
+            case MINUTES:
+                return DateUnit.MINUTE;
+            case HOURS:
+                return DateUnit.HOUR;
+            case DAYS:
+                return DateUnit.DAY;
+            default:
+                throw new ToolException("无法找到对应的时间单位转换！");
+        }
+    }
+
+    /**
+     * 单位兼容转换，将DateUnit转换为对应的{@link TimeUnit}
+     *
+     * @param unit DateUnit
+     * @return {@link ChronoUnit}
+     */
+    public static TimeUnit toTimeUnit(DateUnit unit) {
+        switch (unit) {
+            case MILLISECOND:
+                return TimeUnit.MILLISECONDS;
+            case SECOND:
+                return TimeUnit.SECONDS;
+            case MINUTE:
+                return TimeUnit.MINUTES;
+            case HOUR:
+                return TimeUnit.HOURS;
+            case DAY:
+                return TimeUnit.DAYS;
+            default:
+                throw new ToolException("无法找到对应的时间单位转换！");
+        }
+    }
+
+
 }

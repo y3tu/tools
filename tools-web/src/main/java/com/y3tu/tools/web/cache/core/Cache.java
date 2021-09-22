@@ -1,6 +1,7 @@
-package com.y3tu.tools.web.cache;
+package com.y3tu.tools.web.cache.core;
 
 import com.y3tu.tools.kit.lang.func.Func0;
+import com.y3tu.tools.web.cache.stats.CacheStats;
 
 /**
  * 缓存的顶级接口
@@ -79,4 +80,11 @@ public interface Cache {
      * 清除缓存
      */
     void clear();
+
+    /**
+     * 获取统计信息
+     *
+     * @return {@link CacheStats}
+     */
+    CacheStats getCacheStats();
 }
