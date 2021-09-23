@@ -4,6 +4,7 @@ import com.y3tu.tools.kit.collection.ArrayUtil;
 import com.y3tu.tools.kit.exception.ToolException;
 import com.y3tu.tools.kit.lang.Assert;
 import com.y3tu.tools.kit.lang.SimpleCache;
+import com.y3tu.tools.kit.text.StrUtil;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
@@ -146,5 +147,90 @@ public class ReflectUtil {
             accessibleObject.setAccessible(true);
         }
         return accessibleObject;
+    }
+
+    /**
+     * 获取字段值
+     *
+     * @param obj   对象，static字段则此字段为null
+     * @param field 字段
+     * @return 字段值
+     */
+    public static Object getFieldValue(Object obj, Field field) {
+        if (null == field) {
+            return null;
+        }
+        if (obj instanceof Class) {
+            // 静态字段获取时对象为null
+            obj = null;
+        }
+
+        setAccessible(field);
+        Object result;
+        try {
+            result = field.get(obj);
+        } catch (IllegalAccessException e) {
+            throw new ToolException(e, "IllegalAccess for {}.{}", field.getDeclaringClass(), field.getName());
+        }
+        return result;
+    }
+
+    /**
+     * 获取字段值
+     *
+     * @param obj       对象，如果static字段，此处为类
+     * @param fieldName 字段名
+     * @return 字段值
+     */
+    public static Object getFieldValue(Object obj, String fieldName) {
+        if (null == obj || StrUtil.isBlank(fieldName)) {
+            return null;
+        }
+        return getFieldValue(obj, getField(obj.getClass(), fieldName));
+    }
+
+    /**
+     * 查找指定类中的指定name的字段（包括非public字段），也包括父类和Object类的字段， 字段不存在则返回{@code null}
+     *
+     * @param beanClass 被查找字段的类,不能为null
+     * @param name      字段名
+     * @return 字段
+     */
+    public static Field getField(Class<?> beanClass, String name) {
+        final Field[] fields = getFieldsDirectly(beanClass, true);
+        for (Field field : fields) {
+            if (field.getName().equals(name)) {
+                return field;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获得一个类中所有字段列表，直接反射获取，无缓存<br>
+     * 如果子类与父类中存在同名字段，则这两个字段同时存在，子类字段在前，父类字段在后。
+     *
+     * @param beanClass            类
+     * @param withSuperClassFields 是否包括父类的字段列表
+     * @return 字段列表
+     * @throws SecurityException 安全检查异常
+     */
+    public static Field[] getFieldsDirectly(Class<?> beanClass, boolean withSuperClassFields) throws SecurityException {
+        Assert.notNull(beanClass);
+
+        Field[] allFields = null;
+        Class<?> searchType = beanClass;
+        Field[] declaredFields;
+        while (searchType != null) {
+            declaredFields = searchType.getDeclaredFields();
+            if (null == allFields) {
+                allFields = declaredFields;
+            } else {
+                allFields = ArrayUtil.append(allFields, declaredFields);
+            }
+            searchType = withSuperClassFields ? searchType.getSuperclass() : null;
+        }
+
+        return allFields;
     }
 }

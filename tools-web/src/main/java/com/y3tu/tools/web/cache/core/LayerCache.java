@@ -35,7 +35,7 @@ public class LayerCache extends BaseCache {
      */
     private RedisCache redisCache;
     /**
-     * 是否使用一级缓存， 默认true
+     * 是否使用本地缓存， 默认true
      */
     private boolean useLocalCache = true;
     /**
@@ -120,7 +120,7 @@ public class LayerCache extends BaseCache {
     @Override
     public void put(Object key, Object value) {
         redisCache.put(key, value);
-        // 删除一级缓存
+        // 删除本地缓存
         if (useLocalCache) {
             deleteLocalCache(key);
         }
@@ -151,7 +151,7 @@ public class LayerCache extends BaseCache {
         // 删除的时候要先删除Redis缓存再删除本地缓存，否则有并发问题
         redisCache.clear();
         if (useLocalCache) {
-            // 清除一级缓存需要用到redis的订阅/发布模式，否则集群中其他服服务器节点的一级缓存数据无法删除
+            // 清除本地缓存需要用到redis的订阅/发布模式，否则集群中其他服服务器节点的一级缓存数据无法删除
             RedisPubSubMessage message = new RedisPubSubMessage();
             message.setCacheName(getName());
             message.setMessageType(RedisPubSubMessageType.CLEAR);
@@ -166,7 +166,7 @@ public class LayerCache extends BaseCache {
      * @param key 键
      */
     private void deleteLocalCache(Object key) {
-        // 删除一级缓存需要用到redis的Pub/Sub（订阅/发布）模式，否则集群中其他服服务器节点的一级缓存数据无法删除
+        // 删除本地缓存需要用到redis的Pub/Sub（订阅/发布）模式，否则集群中其他服服务器节点的一级缓存数据无法删除
         RedisPubSubMessage message = new RedisPubSubMessage();
         message.setCacheName(getName());
         message.setKey(key);

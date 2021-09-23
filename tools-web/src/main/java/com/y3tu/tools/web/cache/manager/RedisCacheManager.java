@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * 二级缓存管理
+ * Redis缓存管理
  *
  * @author y3tu
  */
@@ -58,7 +58,7 @@ public class RedisCacheManager extends BaseCacheManager implements DisposableBea
      * @param stats          是否开启统计
      * @param allowNullValue 是否允许值为空
      */
-    public RedisCacheManager(boolean stats, boolean allowNullValue) {
+    public RedisCacheManager(boolean stats, boolean allowNullValue,RedisTemplate<String, Object> redisTemplate) {
         this.stats = stats;
         this.allowNullValue = allowNullValue;
         this.redisTemplate = redisTemplate;

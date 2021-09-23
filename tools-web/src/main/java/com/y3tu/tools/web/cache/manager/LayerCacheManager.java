@@ -42,7 +42,7 @@ public class LayerCacheManager extends RedisCacheManager implements Initializing
      */
     private final RedisMessageListener messageListener = new RedisMessageListener();
 
-    public LayerCacheManager(RedisTemplate<String, Object> redisTemplate, boolean stats,boolean allowNullValue) {
+    public LayerCacheManager(boolean stats, boolean allowNullValue, RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
         this.stats = stats;
         this.allowNullValue = allowNullValue;

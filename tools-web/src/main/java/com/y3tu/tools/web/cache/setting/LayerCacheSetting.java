@@ -28,5 +28,9 @@ public class LayerCacheSetting implements Serializable {
      * redis缓存配置
      */
     private RedisCacheSetting redisCacheSetting;
+    /**
+     * 描述
+     */
+    private String description;
 
 }

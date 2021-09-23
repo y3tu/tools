@@ -27,11 +27,11 @@ public class LocalCacheSetting implements Serializable {
     /**
      * 缓存有效时间
      */
-    private int expireTime = 0;
+    private int expireTime = 10000;
     /**
      * 缓存时间单位
      */
-    private DateUnit dateUnit = DateUnit.MILLISECOND;
+    private DateUnit dateUnit = DateUnit.HOUR;
     /**
      * 缓存失效模式{@link ExpireMode}
      */

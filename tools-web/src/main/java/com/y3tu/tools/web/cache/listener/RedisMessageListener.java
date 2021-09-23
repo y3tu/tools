@@ -35,15 +35,15 @@ public class RedisMessageListener extends MessageListenerAdapter {
         if (cache != null && cache instanceof LayerCache) {
             switch (redisPubSubMessage.getMessageType()) {
                 case EVICT:
-                    // 获取一级缓存，并删除一级缓存数据
+                    // 获取本地缓存，并删除本地缓存数据
                     ((LayerCache) cache).getLocalCache().evict(redisPubSubMessage.getKey());
-                    log.info("删除一级缓存{}数据,key={}", redisPubSubMessage.getCacheName(), redisPubSubMessage.getKey());
+                    log.info("删除本地缓存{}数据,key={}", redisPubSubMessage.getCacheName(), redisPubSubMessage.getKey());
                     break;
 
                 case CLEAR:
-                    // 获取一级缓存，并删除一级缓存数据
+                    // 获取本地缓存，并删除本地缓存数据
                     ((LayerCache) cache).getLocalCache().clear();
-                    log.info("清除一级缓存{}数据", redisPubSubMessage.getCacheName());
+                    log.info("清除本地缓存{}数据", redisPubSubMessage.getCacheName());
                     break;
 
                 default:
