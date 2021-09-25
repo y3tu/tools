@@ -1,7 +1,6 @@
 package com.y3tu.tools.kit.pool.support;
 
-import com.y3tu.tools.kit.pool.intf.ObjectFactory;
-import com.y3tu.tools.kit.pool.intf.Validator;
+import com.y3tu.tools.kit.pool.intf.PoolFactory;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -23,13 +22,9 @@ public class BoundedPool<T> extends AbstractPool<T> {
      */
     private Queue<T> objects;
     /**
-     * 对象校验
-     */
-    private Validator<T> validator;
-    /**
      * 对象创建
      */
-    private ObjectFactory<T> objectFactory;
+    private PoolFactory<T> poolFactory;
     /**
      * 信号量
      */
@@ -39,11 +34,10 @@ public class BoundedPool<T> extends AbstractPool<T> {
      */
     private volatile boolean shutdownCalled;
 
-    public BoundedPool(int size, Validator<T> validator, ObjectFactory<T> objectFactory) {
+    public BoundedPool(int size, PoolFactory<T> poolFactory) {
         super();
-        this.objectFactory = objectFactory;
+        this.poolFactory = poolFactory;
         this.size = size;
-        this.validator = validator;
         objects = new LinkedList<T>();
         initializeObjects();
         shutdownCalled = false;
@@ -84,7 +78,7 @@ public class BoundedPool<T> extends AbstractPool<T> {
 
     @Override
     protected boolean isValid(T t) {
-        return validator.isValid(t);
+        return poolFactory.isValid(t);
     }
 
     /**
@@ -93,7 +87,7 @@ public class BoundedPool<T> extends AbstractPool<T> {
     private void initializeObjects() {
         //创建size个对象
         for (int i = 0; i < size; i++) {
-            objects.add(objectFactory.createNew());
+            objects.add(poolFactory.createObject());
         }
     }
 
@@ -102,7 +96,7 @@ public class BoundedPool<T> extends AbstractPool<T> {
      */
     private void clearResources() {
         for (T t : objects) {
-            validator.invalidate(t);
+            poolFactory.invalidate(t);
         }
     }
 }

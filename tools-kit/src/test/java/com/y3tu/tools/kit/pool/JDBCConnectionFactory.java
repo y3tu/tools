@@ -1,14 +1,13 @@
 package com.y3tu.tools.kit.pool;
 
-import com.y3tu.tools.kit.pool.intf.ObjectFactory;
-import com.y3tu.tools.kit.pool.intf.Pool;
-import com.y3tu.tools.kit.pool.support.BoundedBlockingPool;
+import com.y3tu.tools.kit.pool.intf.PoolFactory;
+
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class JDBCConnectionFactory implements ObjectFactory<Connection> {
+public class JDBCConnectionFactory implements PoolFactory<Connection> {
 
     private String connectionURL;
     private String userName;
@@ -29,7 +28,7 @@ public class JDBCConnectionFactory implements ObjectFactory<Connection> {
     }
 
     @Override
-    public Connection createNew() {
+    public Connection createObject() {
         try {
             return DriverManager.getConnection(connectionURL, userName,
                     password);
@@ -39,13 +38,23 @@ public class JDBCConnectionFactory implements ObjectFactory<Connection> {
         }
     }
 
-
-    public static void main(String[] args) {
-        Pool<Connection> pool = new BoundedBlockingPool<Connection>(10,
-                new JDBCConnectionValidator(),
-                new JDBCConnectionFactory("", "", "", ""));
-        //do whatever you like
-
+    @Override
+    public boolean isValid(Connection con) {
+        if (con == null) {
+            return false;
+        }
+        try {
+            return !con.isClosed();
+        } catch (SQLException se) {
+            return false;
+        }
     }
 
+    @Override
+    public void invalidate(Connection con) {
+        try {
+            con.close();
+        } catch (SQLException se) {
+        }
+    }
 }

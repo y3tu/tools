@@ -13,7 +13,7 @@ public interface BlockingPool<T> extends Pool<T> {
     /**
      * 获取池中对象 有超时限制
      *
-     * @param time     时间
+     * @param time     等待时间，如果没有马上获取到对象，可以等待一定时间后获取
      * @param dateUnit 时间单位
      * @return 对象
      * @throws InterruptedException 异常

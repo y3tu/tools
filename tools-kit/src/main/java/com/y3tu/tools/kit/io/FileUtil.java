@@ -2,25 +2,36 @@ package com.y3tu.tools.kit.io;
 
 import com.y3tu.tools.kit.collection.ArrayUtil;
 import com.y3tu.tools.kit.exception.ToolException;
+import com.y3tu.tools.kit.lang.Assert;
 import com.y3tu.tools.kit.text.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.file.CopyOption;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * 文件工具类
  *
  * @author y3tu
  */
+@Slf4j
 public class FileUtil {
 
     /**
@@ -143,6 +154,24 @@ public class FileUtil {
     }
 
     /**
+     * 获取标准的绝对路径
+     *
+     * @param file 文件
+     * @return 绝对路径
+     */
+    public static String getAbsolutePath(File file) {
+        if (file == null) {
+            return null;
+        }
+
+        try {
+            return file.getCanonicalPath();
+        } catch (IOException e) {
+            return file.getAbsolutePath();
+        }
+    }
+
+    /**
      * 创建文件夹
      *
      * @param dirPath 文件夹路径
@@ -230,5 +259,165 @@ public class FileUtil {
             }
         }
         return destFile;
+    }
+
+    /**
+     * 通过JDK7+的 {@link Files#copy(Path, Path, CopyOption...)} 方法拷贝文件<br>
+     * 此方法不支持递归拷贝目录，如果src传入是目录，只会在目标目录中创建空目录
+     *
+     * @param src     源文件路径，如果为目录只在目标中创建新目录
+     * @param target  目标文件或目录，如果为目录使用与源文件相同的文件名
+     * @param options {@link StandardCopyOption}
+     * @return Path
+     */
+    public static Path copyFile(Path src, Path target, CopyOption... options) {
+        Assert.notNull(src, "Source File is null !");
+        Assert.notNull(target, "Destination File or directiory is null !");
+
+        final Path targetPath = isDirectory(target, false) ? target.resolve(src.getFileName()) : target;
+        // 创建级联父目录
+        mkParentDirs(targetPath.toFile());
+        try {
+            return Files.copy(src, targetPath, options);
+        } catch (IOException e) {
+            throw new ToolException(e);
+        }
+    }
+
+    /**
+     * 判断是否为目录，如果file为null，则返回false
+     *
+     * @param path          {@link Path}
+     * @param isFollowLinks 是否追踪到软链对应的真实地址
+     * @return 如果为目录true
+     */
+    public static boolean isDirectory(Path path, boolean isFollowLinks) {
+        if (null == path) {
+            return false;
+        }
+        final LinkOption[] options = isFollowLinks ? new LinkOption[0] : new LinkOption[]{LinkOption.NOFOLLOW_LINKS};
+        return Files.isDirectory(path, options);
+    }
+
+    /**
+     * 下载文件
+     *
+     * @param request  /
+     * @param response /
+     * @param file     /
+     */
+    public static void downloadFile(File file, String fileName, boolean deleteOnExit, HttpServletRequest request, HttpServletResponse response) {
+        response.setCharacterEncoding(request.getCharacterEncoding());
+        response.setContentType("application/octet-stream");
+        InputStream fis = null;
+
+        if (StrUtil.isEmpty(fileName)) {
+            fileName = file.getName();
+        }
+        try {
+            fis = new FileInputStream(file);
+            response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+            IoUtil.copy(fis, response.getOutputStream(), null);
+            response.flushBuffer();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                    if (deleteOnExit) {
+                        if (response.isCommitted()) {
+                            file.deleteOnExit();
+                        }
+                    }
+                } catch (IOException e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
+    }
+
+    public static void downloadFileBatch(Map<String, File> fileListMap, String zipName, boolean deleteOnExit, HttpServletRequest request, HttpServletResponse response) {
+        //响应头的设置
+        response.reset();
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("multipart/form-data");
+        String downloadName = zipName + ".zip";
+        //返回客户端浏览器的版本号、类型
+        String agent = request.getHeader("USER-AGENT");
+        try {
+            //针对IE或者以IE为内核的浏览器：
+            if (agent.contains("MSIE") || agent.contains("Trident")) {
+                downloadName = java.net.URLEncoder.encode(downloadName, "UTF-8");
+            } else {
+                //非IE浏览器的处理：
+                downloadName = new String(downloadName.getBytes("UTF-8"), "ISO-8859-1");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        response.setHeader("Content-Disposition", "attachment;fileName=\"" + downloadName + "\"");
+
+        //设置压缩流：直接写入response，实现边压缩边下载
+        ZipOutputStream zipStream = null;
+        //循环将文件写入压缩流
+        FileInputStream zipSource = null;
+        BufferedInputStream bufferStream = null;
+        try {
+            zipStream = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()));
+            //设置压缩方法
+            zipStream.setMethod(ZipOutputStream.DEFLATED);
+            for (String fileName : fileListMap.keySet()) {
+
+                File file = fileListMap.get(fileName);
+                if (file.exists()) {
+                    //将需要压缩的文件格式化为输入流
+                    zipSource = new FileInputStream(file);
+                    //在压缩目录中文件的名字
+                    ZipEntry zipEntry = new ZipEntry(fileName);
+                    //定位该压缩条目位置，开始写入文件到压缩包中
+                    zipStream.putNextEntry(zipEntry);
+                    bufferStream = new BufferedInputStream(zipSource, 1024 * 10);
+                    int read = 0;
+                    byte[] buf = new byte[1024 * 10];
+                    while ((read = bufferStream.read(buf, 0, 1024 * 10)) != -1) {
+                        zipStream.write(buf, 0, read);
+                    }
+                    zipStream.closeEntry();
+                }
+
+            }
+
+            response.flushBuffer();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        } finally {
+            try {
+                if (zipStream != null) {
+                    zipStream.close();
+                }
+
+                if (zipSource != null) {
+                    zipSource.close();
+                }
+
+                if (bufferStream != null) {
+                    bufferStream.close();
+                }
+                if (deleteOnExit) {
+                    if (response.isCommitted()) {
+                        for (String fileName : fileListMap.keySet()) {
+                            File file = fileListMap.get(fileName);
+                            if (deleteOnExit) {
+                                file.deleteOnExit();
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+
     }
 }
