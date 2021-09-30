@@ -331,6 +331,20 @@ public class ThreadUtil {
     }
 
     /**
+     * 创建新线程
+     *
+     * @param runnable {@link Runnable}
+     * @return {@link Thread}
+     */
+    public static Thread newThread(Runnable runnable) {
+        final Thread t = newThread(runnable, "", false);
+        if (t.getPriority() != Thread.NORM_PRIORITY) {
+            t.setPriority(Thread.NORM_PRIORITY);
+        }
+        return t;
+    }
+
+    /**
      * 挂起当前线程
      *
      * @param timeout  挂起的时长

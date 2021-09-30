@@ -24,7 +24,6 @@ import java.util.concurrent.ExecutorService;
  * </pre>
  *
  * @author Looly
- * @since 4.1.15
  */
 public class SyncFinisher {
 

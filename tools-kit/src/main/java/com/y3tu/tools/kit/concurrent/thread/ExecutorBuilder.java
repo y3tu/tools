@@ -59,9 +59,9 @@ public class ExecutorBuilder {
     private Boolean allowCoreThreadTimeOut;
 
     /**
-     * 是否定时线程池
+     * 是否定时线程池 默认false
      */
-    private Boolean isScheduled;
+    private Boolean isScheduled = false;
 
     /**
      * 设置初始池大小，默认0

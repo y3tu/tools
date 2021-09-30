@@ -27,7 +27,7 @@ public class PoolFactoryUtil {
     }
 
 
-    public static <T> Pool<T> newBoundedNonBlockingPool(int size, com.y3tu.tools.kit.pool.intf.PoolFactory<T> factory) {
+    public static <T> Pool<T> newBoundedNonBlockingPool(int size, PoolFactory<T> factory) {
         return new BoundedPool<T>(size, factory);
     }
 }

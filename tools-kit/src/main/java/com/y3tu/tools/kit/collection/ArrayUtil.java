@@ -52,6 +52,25 @@ public class ArrayUtil {
     }
 
     /**
+     * 是否包含{@code null}元素
+     *
+     * @param <T>   数组元素类型
+     * @param array 被检查的数组
+     * @return 是否包含{@code null}元素
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> boolean hasNull(T... array) {
+        if (isNotEmpty(array)) {
+            for (T element : array) {
+                if (null == element) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * 对象是否为数组对象
      *
      * @param obj 对象

@@ -1,6 +1,7 @@
 package com.y3tu.tools.web.annotation;
 
 import com.y3tu.tools.web.configure.WebConfigure;
+import com.y3tu.tools.web.util.SpringContextUtil;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.Documented;
@@ -17,7 +18,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-@Import(WebConfigure.class)
+@Import({WebConfigure.class, SpringContextUtil.class})
 public @interface EnableToolsWeb {
 
 }

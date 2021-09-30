@@ -1,7 +1,7 @@
 package com.y3tu.tools.kit.lang;
 
-import com.y3tu.tools.kit.base.ClassUtil;
-import com.y3tu.tools.kit.base.ReflectUtil;
+import com.y3tu.tools.kit.reflect.ClassUtil;
+import com.y3tu.tools.kit.reflect.ReflectUtil;
 import com.y3tu.tools.kit.collection.ArrayUtil;
 import com.y3tu.tools.kit.lang.func.Func0;
 

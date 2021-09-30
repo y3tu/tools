@@ -24,7 +24,7 @@
         <tools.version>0.0.1</tools.version>
         <lombok-version>1.16.18</lombok-version>
         <junit-version>4.12</junit-version>
-        <spring-boot.version>2.2.0.RELEASE</spring-boot.version>
+        <spring-boot.version>2.5.4</spring-boot.version>
     </properties>
 
     <dependencies>

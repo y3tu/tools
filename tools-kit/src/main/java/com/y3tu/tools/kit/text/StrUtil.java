@@ -2,6 +2,16 @@ package com.y3tu.tools.kit.text;
 
 
 import com.y3tu.tools.kit.collection.ArrayUtil;
+import com.y3tu.tools.kit.exception.ToolException;
+import com.y3tu.tools.kit.lang.func.Filter;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
+
+import static java.util.regex.Pattern.compile;
 
 /**
  * 字符串工具类
@@ -271,4 +281,78 @@ public class StrUtil implements StrPool {
         return false;
     }
 
+    /**
+     * 清理空白字符
+     *
+     * @param str 被清理的字符串
+     * @return 清理后的字符串
+     */
+    public static String cleanBlank(CharSequence str) {
+        return filter(str, c -> !CharUtil.isBlankChar(c));
+    }
+
+    /**
+     * 过滤字符串
+     *
+     * @param str    字符串
+     * @param filter 过滤器，{@link Filter#accept(Object)}返回为{@code true}的保留字符
+     * @return 过滤后的字符串
+     */
+    public static String filter(CharSequence str, final Filter<Character> filter) {
+        if (str == null || filter == null) {
+            return str.toString();
+        }
+
+        int len = str.length();
+        final StringBuilder sb = new StringBuilder(len);
+        char c;
+        for (int i = 0; i < len; i++) {
+            c = str.charAt(i);
+            if (filter.accept(c)) {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 根据正则获取到字符串匹配正则的次数
+     *
+     * @param str     字符串
+     * @param pattern 正则
+     * @return 正则匹配次数
+     */
+    public static int getPatternMatchCount(CharSequence str, Pattern pattern) {
+        Matcher matcher = pattern.matcher(str);
+        int count = 0;
+        while (matcher.find()) {
+            count++;
+        }
+        return count;
+    }
+
+    /**
+     * 处理Gizp压缩的数据.
+     *
+     * @param str
+     * @return
+     */
+    public static String conventFromGzip(String str, String charset) {
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            ByteArrayInputStream in;
+            GZIPInputStream gunzip = null;
+
+            in = new ByteArrayInputStream(str.getBytes(charset));
+            gunzip = new GZIPInputStream(in);
+            byte[] buffer = new byte[256];
+            int n;
+            while ((n = gunzip.read(buffer)) >= 0) {
+                out.write(buffer, 0, n);
+            }
+            return out.toString();
+        } catch (Exception e) {
+            throw new ToolException(e);
+        }
+    }
 }

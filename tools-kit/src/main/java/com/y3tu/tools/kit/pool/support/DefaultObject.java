@@ -11,6 +11,12 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class DefaultObject<T> {
+    /**
+     * 时间戳
+     */
     public long time;
+    /**
+     * 真正的对象
+     */
     T t;
 }
