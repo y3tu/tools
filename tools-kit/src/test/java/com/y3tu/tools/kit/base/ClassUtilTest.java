@@ -10,6 +10,6 @@ public class ClassUtilTest {
     @Test
     public void getClassName() {
         Console console = new Console();
-        Console.print(ClassUtil.getClassName(console, false));
+        Console.log(ClassUtil.getClassName(console, false));
     }
 }

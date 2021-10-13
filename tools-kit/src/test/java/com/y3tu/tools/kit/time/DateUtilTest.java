@@ -54,15 +54,15 @@ public class DateUtilTest {
     public void formatFriendlyTimeSpanByNow() {
         String strDate = "2021-09-16 14:57:22";
         long timeMillis = DateUtil.strToDate(strDate, DateUtil.NORM_DATETIME_PATTERN).getTime();
-        Console.print(DateUtil.formatFriendlyTimeSpanByNow(timeMillis));
+        Console.log(DateUtil.formatFriendlyTimeSpanByNow(timeMillis));
     }
 
     @Test
     public void beginOfMonth() {
         String strDate = "2021-09-16 14:57:22";
         LocalDateTime localDateTime = DateUtil.strToLdt(strDate, DateUtil.NORM_DATETIME_PATTERN);
-        Console.print(DateUtil.LdtToStr(DateUtil.beginOfMonth(localDateTime), DateUtil.NORM_DATETIME_PATTERN));
-        Console.print(DateUtil.LdtToStr(DateUtil.endOfMonth(localDateTime), DateUtil.NORM_DATETIME_PATTERN));
+        Console.log(DateUtil.LdtToStr(DateUtil.beginOfMonth(localDateTime), DateUtil.NORM_DATETIME_PATTERN));
+        Console.log(DateUtil.LdtToStr(DateUtil.endOfMonth(localDateTime), DateUtil.NORM_DATETIME_PATTERN));
 
     }
 

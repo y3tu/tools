@@ -14,7 +14,7 @@ public class NumberUtilTest {
         float a = 1.2f;
         double b = 2.32;
         float c = NumberUtil.add(a, b).floatValue();
-        Console.print(c + "");
+        Console.log(c + "");
     }
 
     @Test
@@ -22,6 +22,6 @@ public class NumberUtilTest {
         String a = "5";
         String b = "3";
         BigDecimal bigDecimal = NumberUtil.div(a, b, 3, RoundingMode.HALF_UP);
-        Console.print(bigDecimal.floatValue()+"");
+        Console.log(bigDecimal.floatValue()+"");
     }
 }

@@ -7,11 +7,13 @@ import com.y3tu.tools.kit.lang.func.Filter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
-import static java.util.regex.Pattern.compile;
 
 /**
  * 字符串工具类
@@ -354,5 +356,117 @@ public class StrUtil implements StrPool {
         } catch (Exception e) {
             throw new ToolException(e);
         }
+    }
+
+    /**
+     * 将对象转为字符串
+     * <pre>
+     * 	 1、Byte数组和ByteBuffer会被转换为对应字符串的数组
+     * 	 2、对象数组会调用Arrays.toString方法
+     * </pre>
+     *
+     * @param obj     对象
+     * @param charset 字符集
+     * @return 字符串
+     */
+    public static String str(Object obj, Charset charset) {
+        if (null == obj) {
+            return null;
+        }
+        if (obj instanceof String) {
+            return (String) obj;
+        } else if (obj instanceof byte[]) {
+            if (null == charset) {
+                return new String((byte[]) obj);
+            }
+            return new String((byte[]) obj, charset);
+        } else if (obj instanceof Byte[]) {
+            Byte[] data = (Byte[]) obj;
+            byte[] bytes = new byte[data.length];
+            Byte dataByte;
+            for (int i = 0; i < data.length; i++) {
+                dataByte = data[i];
+                bytes[i] = (null == dataByte) ? -1 : dataByte;
+            }
+            return str(bytes, charset);
+        } else if (obj instanceof ByteBuffer) {
+            if (null == charset) {
+                charset = Charset.defaultCharset();
+            }
+            return charset.decode((ByteBuffer) obj).toString();
+        } else if (ArrayUtil.isArray(obj)) {
+            return ArrayUtil.toString(obj);
+        }
+
+        return obj.toString();
+    }
+
+    /**
+     * 将对象转为字符串<br>
+     *
+     * <pre>
+     * 1、Byte数组和ByteBuffer会被转换为对应字符串的数组
+     * 2、对象数组会调用Arrays.toString方法
+     * </pre>
+     *
+     * @param obj 对象
+     * @return 字符串
+     */
+    public static String utf8Str(Object obj) {
+        return str(obj, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * 格式化文本, {} 表示占位符<br>
+     * 此方法只是简单将占位符 {} 按照顺序替换为参数<br>
+     * 如果想输出 {} 使用 \\转义 { 即可，如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可<br>
+     * 例：<br>
+     * 通常使用：format("this is {} for {}", "a", "b") =》 this is a for b<br>
+     * 转义{}： format("this is \\{} for {}", "a", "b") =》 this is \{} for a<br>
+     * 转义\： format("this is \\\\{} for {}", "a", "b") =》 this is \a for b<br>
+     *
+     * @param template 文本模板，被替换的部分用 {} 表示，如果模板为null，返回"null"
+     * @param params   参数值
+     * @return 格式化后的文本，如果模板为null，返回"null"
+     */
+    public static String format(CharSequence template, Object... params) {
+        if (null == template) {
+            return NULL;
+        }
+        if (ArrayUtil.isEmpty(params) || isBlank(template)) {
+            return template.toString();
+        }
+        return StrFormatter.format(template.toString(), params);
+    }
+
+    /**
+     * 重复某个字符串并通过分界符连接
+     *
+     * <pre>
+     * StrUtil.repeatAndJoin("?", 5, ",")   = "?,?,?,?,?"
+     * StrUtil.repeatAndJoin("?", 0, ",")   = ""
+     * StrUtil.repeatAndJoin("?", 5, null) = "?????"
+     * </pre>
+     *
+     * @param str         被重复的字符串
+     * @param count       数量
+     * @param conjunction 分界符
+     * @return 连接后的字符串
+     */
+    public static String repeatAndJoin(CharSequence str, int count, CharSequence conjunction) {
+        if (count <= 0) {
+            return EMPTY;
+        }
+        final StringBuilder builder = new StringBuilder();
+        boolean isFirst = true;
+        while (count-- > 0) {
+            if (isFirst) {
+                isFirst = false;
+            } else if (isNotEmpty(conjunction)) {
+                builder.append(conjunction);
+            }
+            builder.append(str);
+        }
+        return builder.toString();
     }
 }

@@ -154,6 +154,22 @@ public class ArrayUtil {
      * 如果插入位置为为负数，从原数组从后向前计数，若大于原数组长度，则空白处用null填充
      *
      * @param <T>         数组元素类型
+     * @param buffer      已有数组
+     * @param index       插入位置，此位置为对应此位置元素之前的空档
+     * @param newElements 新元素
+     * @return 新数组
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] insert(T[] buffer, int index, T... newElements) {
+        return (T[]) insert((Object) buffer, index, newElements);
+    }
+
+    /**
+     * 将新元素插入到到已有数组中的某个位置<br>
+     * 添加新元素会生成一个新的数组，不影响原数组<br>
+     * 如果插入位置为为负数，从原数组从后向前计数，若大于原数组长度，则空白处用null填充
+     *
+     * @param <T>         数组元素类型
      * @param array       已有数组
      * @param index       插入位置，此位置为对应此位置元素之前的空档
      * @param newElements 新元素

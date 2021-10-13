@@ -8,6 +8,6 @@ public class SystemUtilTest {
 
     @Test
     public void get() {
-        Console.print(SystemUtil.get(SystemUtil.TMPDIR));
+        Console.log(SystemUtil.get(SystemUtil.TMPDIR),"222",333);
     }
 }

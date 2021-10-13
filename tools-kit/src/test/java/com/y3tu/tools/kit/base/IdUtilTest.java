@@ -7,11 +7,11 @@ public class IdUtilTest {
 
     @Test
     public void simpleUUID() {
-        Console.print(IdUtil.simpleUUID());
+        Console.log(IdUtil.simpleUUID());
     }
 
     @Test
     public void testNextId() {
-        Console.print(String.valueOf(IdUtil.nextId()));
+        Console.log(String.valueOf(IdUtil.nextId()));
     }
 }

@@ -15,6 +15,6 @@ public class TimeIntervalTest {
         timeInterval.start();
         ThreadUtil.sleep(2000);
         long a = timeInterval.interval("");
-        Console.print(String.valueOf(a));
+        Console.log(String.valueOf(a));
     }
 }
