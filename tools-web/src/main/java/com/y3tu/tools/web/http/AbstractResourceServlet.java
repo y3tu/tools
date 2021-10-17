@@ -3,7 +3,6 @@ package com.y3tu.tools.web.http;
 import com.y3tu.tools.kit.io.IoUtil;
 import com.y3tu.tools.kit.io.ResourceUtil;
 import com.y3tu.tools.kit.text.StrUtil;
-import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletException;
@@ -109,13 +108,13 @@ public abstract class AbstractResourceServlet extends HttpServlet {
             response.setContentType("text/html; charset=utf-8");
         }
         if (StrUtil.containsAnyIgnoreCase(fileName, ".jpg", ".png", ".woff", ".ttf", ".gif")) {
-            byte[] bytes = IoUtil.readBytes(ResourceUtil.getStream(filePath));
+            byte[] bytes = IoUtil.readBytes(ResourceUtil.getStream(filePath), true);
             if (bytes != null) {
                 response.getOutputStream().write(bytes);
             }
             return;
         }
-        String text = IoUtil.read(ResourceUtil.getStream(filePath)., CharsetUtil.UTF_8);
+        String text = IoUtil.readUtf8(ResourceUtil.getStream(filePath), true);
         if (text == null) {
             response.sendRedirect(uri + "/index.html");
             return;

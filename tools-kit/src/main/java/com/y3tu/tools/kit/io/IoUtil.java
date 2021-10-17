@@ -3,15 +3,20 @@ package com.y3tu.tools.kit.io;
 import com.y3tu.tools.kit.exception.ToolException;
 import com.y3tu.tools.kit.lang.Assert;
 import com.y3tu.tools.kit.text.StrUtil;
-import lombok.NonNull;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.Flushable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.Channels;
@@ -20,8 +25,6 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * IO流工具类
@@ -60,6 +63,88 @@ public class IoUtil {
                 closeable.close();
             } catch (Exception e) {
                 //静默关闭
+            }
+        }
+    }
+
+    /**
+     * 从缓存中刷出数据
+     *
+     * @param flushable {@link Flushable}
+     */
+    public static void flush(Flushable flushable) {
+        if (null != flushable) {
+            try {
+                flushable.flush();
+            } catch (Exception e) {
+                // 静默刷出
+            }
+        }
+    }
+
+    /**
+     * 获得一个Reader
+     *
+     * @param in      输入流
+     * @param charset 字符集
+     * @return BufferedReader对象
+     */
+    public static BufferedReader getReader(InputStream in, Charset charset) {
+        if (null == in) {
+            return null;
+        }
+
+        InputStreamReader reader;
+        if (null == charset) {
+            reader = new InputStreamReader(in);
+        } else {
+            reader = new InputStreamReader(in, charset);
+        }
+
+        return new BufferedReader(reader);
+    }
+
+    /**
+     * 获得一个Writer
+     *
+     * @param out     输入流
+     * @param charset 字符集
+     * @return OutputStreamWriter对象
+     */
+    public static OutputStreamWriter getWriter(OutputStream out, Charset charset) {
+        if (null == out) {
+            return null;
+        }
+
+        if (null == charset) {
+            return new OutputStreamWriter(out);
+        } else {
+            return new OutputStreamWriter(out, charset);
+        }
+    }
+
+    /**
+     * 将多部分内容写到流中
+     *
+     * @param out        输出流
+     * @param isCloseOut 写入完毕是否关闭输出流
+     * @param contents   写入的内容
+     */
+    public static void writeObjects(OutputStream out, boolean isCloseOut, Serializable... contents) {
+        ObjectOutputStream osw = null;
+        try {
+            osw = out instanceof ObjectOutputStream ? (ObjectOutputStream) out : new ObjectOutputStream(out);
+            for (Object content : contents) {
+                if (content != null) {
+                    osw.writeObject(content);
+                }
+            }
+            osw.flush();
+        } catch (IOException e) {
+            throw new ToolException(e);
+        } finally {
+            if (isCloseOut) {
+                close(osw);
             }
         }
     }
@@ -166,58 +251,65 @@ public class IoUtil {
         return StrUtil.str(buffer, charset);
     }
 
-    public static String read(InputStream in, Charset charset) {
-        return read(, charset);
-    }
-
     /**
-     * 判断文件夹是否存在
+     * 从流中读取bytes
      *
-     * @param path 文件夹路径
-     * @return 文件夹是否存在
+     * @param in      {@link InputStream}
+     * @param isClose 是否关闭输入流
+     * @return bytes
      */
-    public static boolean isDirExists(Path path) {
-        return path != null && Files.exists(path) && Files.isDirectory(path);
-    }
-
-    /**
-     * 判断文件是否存在
-     *
-     * @param path 文件路径
-     * @return 文件是否存在
-     */
-    public static boolean isFileExists(Path path) {
-        if (path == null) {
-            return false;
+    public static byte[] readBytes(InputStream in, boolean isClose) {
+        if (in instanceof FileInputStream) {
+            // 文件流的长度是可预见的，此时直接读取效率更高
+            final byte[] result;
+            try {
+                final int available = in.available();
+                result = new byte[available];
+                final int readLength = in.read(result);
+                if (readLength != available) {
+                    throw new IOException(StrUtil.format("File length is [{}] but read [{}]!", available, readLength));
+                }
+            } catch (IOException e) {
+                throw new ToolException(e);
+            } finally {
+                if (isClose) {
+                    close(in);
+                }
+            }
+            return result;
         }
-        return Files.exists(path) && Files.isRegularFile(path);
-    }
 
-    /**
-     * 在临时目录创建临时文件，命名为${prefix}${random.nextLong()}${suffix}
-     *
-     * @param prefix 文件名前缀
-     * @param suffix 文件名后缀
-     * @return 文件路径
-     * @throws IOException io异常
-     * @see Files#createTempFile
-     */
-    public static Path createTempFile(String prefix, String suffix) throws IOException {
-        return Files.createTempFile(prefix, suffix);
-    }
+        // 未知bytes总量的流
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        copy(in, out, null);
 
-    /**
-     * 文件转为{@link FileInputStream}
-     *
-     * @param file 文件
-     * @return {@link FileInputStream}
-     */
-    public static FileInputStream toStream(File file) {
-        try {
-            return new FileInputStream(file);
-        } catch (Exception e) {
-            throw new ToolException(e);
+        byte[] bytes = out.toByteArray();
+        if (isClose) {
+            close(in);
+            close(out);
         }
+        return bytes;
     }
 
+    /**
+     * 从FileChannel中读取UTF-8编码内容
+     *
+     * @param fileChannel 文件管道
+     * @return 内容
+     */
+    public static String readUtf8(FileChannel fileChannel) {
+        return read(fileChannel, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * 从流中读取UTF-8编码内容
+     *
+     * @param in      {@link InputStream}
+     * @param isClose 是否关闭输入流
+     * @return 内容
+     */
+    public static String readUtf8(InputStream in, boolean isClose) {
+        byte[] bytes = readBytes(in, isClose);
+        return StrUtil.str(bytes, StandardCharsets.UTF_8);
+    }
 }
