@@ -1,8 +1,13 @@
-import 'element-plus/packages/theme-chalk/src/base.scss'
-
+import ElementPlus from 'element-plus'
+import 'element-plus/lib/theme-chalk/index.css'
 import type {App} from 'vue'
-import {ElInfiniteScroll} from "element-plus";
 
 export const setupElementPlus = (app: App) => {
-    app.use(ElInfiniteScroll)
+    app.use(ElementPlus)
+
+    const option = {
+        size: 'medium',
+        zIndex: 2000
+    }
+    app.config.globalProperties.$ELEMENT = option
 }
