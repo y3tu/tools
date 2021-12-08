@@ -1,5 +1,6 @@
 package com.y3tu.tools.kit.lang;
 
+import com.y3tu.tools.kit.exception.ErrorEnum;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -83,6 +84,14 @@ public class R<T> implements Serializable {
         return r;
     }
 
+
+    public static R error(String message) {
+        R r = new R();
+        r.setCode(ErrorEnum.SYSTEM_INTERNAL_ERROR.getCode());
+        r.setStatus(Status.ERROR);
+        r.setMessage(message);
+        return r;
+    }
 
     public static R error(String code, String message) {
         R r = new R();

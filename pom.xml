@@ -15,7 +15,7 @@
     <modules>
         <module>tools-kit</module>
         <module>tools-web</module>
-        <module>tools-ui</module>
+        <module>tools-lowcode</module>
     </modules>
 
     <properties>

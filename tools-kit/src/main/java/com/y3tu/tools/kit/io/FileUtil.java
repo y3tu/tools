@@ -25,6 +25,19 @@ import java.util.zip.ZipOutputStream;
  */
 @Slf4j
 public class FileUtil {
+    /**
+     * 系统临时目录
+     * <br>
+     * windows 包含路径分割符，但Linux 不包含,
+     * 在windows \\==\ 前提下，
+     * 为安全起见 同意拼装 路径分割符，
+     * <pre>
+     *       java.io.tmpdir
+     *       windows : C:\Users/xxx\AppData\Local\Temp\
+     *       linux: /temp
+     * </pre>
+     */
+    public static final String SYS_TEM_DIR = System.getProperty("java.io.tmpdir");
 
     /**
      * 列出目录文件

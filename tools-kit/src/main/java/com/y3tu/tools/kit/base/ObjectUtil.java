@@ -1,5 +1,11 @@
 package com.y3tu.tools.kit.base;
 
+import com.y3tu.tools.kit.collection.ArrayUtil;
+import com.y3tu.tools.kit.text.StrUtil;
+
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * 对象工具类
  *
@@ -48,5 +54,60 @@ public class ObjectUtil {
      */
     public static boolean isNotNull(Object obj) {
         return !isNull(obj);
+    }
+
+    /**
+     * 判断指定对象是否为空，支持：
+     *
+     * <pre>
+     * 1. CharSequence
+     * 2. Map
+     * 3. Iterable
+     * 4. Iterator
+     * 5. Array
+     * </pre>
+     *
+     * @param obj 被判断的对象
+     * @return 是否为空，如果类型不支持，返回false
+     */
+    @SuppressWarnings("rawtypes")
+    public static boolean isEmpty(Object obj) {
+        if (null == obj) {
+            return true;
+        }
+        if (obj instanceof CharSequence) {
+            return StrUtil.isEmpty((CharSequence) obj);
+        } else if (obj instanceof Map) {
+            Map map = (Map) obj;
+            return map.isEmpty();
+        } else if (obj instanceof Iterable) {
+            Iterable iterable = (Iterable) obj;
+            return iterable.iterator().hasNext();
+        } else if (obj instanceof Iterator) {
+            Iterator iterator = (Iterator) obj;
+            return iterator.hasNext();
+        } else if (ArrayUtil.isArray(obj)) {
+            return ArrayUtil.isEmpty(obj);
+        }
+
+        return false;
+    }
+
+    /**
+     * 判断指定对象是否为非空，支持：
+     *
+     * <pre>
+     * 1. CharSequence
+     * 2. Map
+     * 3. Iterable
+     * 4. Iterator
+     * 5. Array
+     * </pre>
+     *
+     * @param obj 被判断的对象
+     * @return 是否为空，如果类型不支持，返回true
+     */
+    public static boolean isNotEmpty(Object obj) {
+        return !isEmpty(obj);
     }
 }
