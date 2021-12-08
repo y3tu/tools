@@ -24,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
+ * 字典服务
+ *
  * @author y3tu
  */
 @Service
@@ -35,7 +37,6 @@ public class DictServiceImpl extends BaseServiceImpl<DictRepository, Dict> imple
     DictDataRepository dictDataRepository;
     @Autowired
     DictSqlRepository dictSqlRepository;
-
 
     @Override
     public Dict getByCode(String code) {

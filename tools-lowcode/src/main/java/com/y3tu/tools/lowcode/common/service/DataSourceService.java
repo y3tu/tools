@@ -25,6 +25,4 @@ public interface DataSourceService extends BaseService<DataSource> {
      * @return
      */
     boolean testConnection(DataSource dataSource);
-
-
 }

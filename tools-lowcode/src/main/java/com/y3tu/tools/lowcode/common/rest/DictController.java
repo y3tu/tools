@@ -21,6 +21,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * 字典Controller
+ *
  * @author y3tu
  */
 @RestController

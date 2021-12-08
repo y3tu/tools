@@ -1,11 +1,9 @@
 package com.y3tu.tools.lowcode.common.util;
 
-import cn.hutool.db.ds.DSFactory;
-import cn.hutool.db.ds.DataSourceWrapper;
-import cn.hutool.setting.Setting;
-import com.y3tu.tool.lowcode.common.entity.domain.DataSource;
-import com.y3tu.tool.lowcode.common.service.DataSourceService;
-import com.y3tu.tool.web.util.SpringContextUtil;
+
+import com.y3tu.tools.lowcode.common.entity.domain.DataSource;
+import com.y3tu.tools.lowcode.common.service.DataSourceService;
+import com.y3tu.tools.web.util.SpringContextUtil;
 
 /**
  * 数据源工具类

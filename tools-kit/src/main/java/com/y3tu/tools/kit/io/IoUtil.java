@@ -6,7 +6,6 @@ import com.y3tu.tools.kit.text.StrUtil;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.Flushable;
@@ -57,7 +56,7 @@ public class IoUtil {
      *
      * @param closeable 被关闭的对象
      */
-    public static void close(Closeable closeable) {
+    public static void close(AutoCloseable closeable) {
         if (closeable != null) {
             try {
                 closeable.close();

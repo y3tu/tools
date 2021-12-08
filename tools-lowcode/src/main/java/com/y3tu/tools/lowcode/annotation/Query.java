@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 查询注解
+ * JPA查询注解
  *
  * @author y3tu
  */
