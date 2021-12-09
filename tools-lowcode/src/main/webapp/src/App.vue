@@ -1,17 +1,11 @@
 <template>
-  <router-view #="{ Component, route }">
-    <component :is="Component" :key="route.path"/>
-  </router-view>
+    <div id="app">
+        <router-view></router-view>
+    </div>
 </template>
 
-<script lang="ts">
-import {defineComponent} from 'vue';
-
-export default defineComponent({
-  name: 'App'
-});
+<script>
+    export default {
+        name: 'App'
+    }
 </script>
-
-<style>
-
-</style>
