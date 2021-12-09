@@ -21,7 +21,7 @@
         <jsch.version>0.1.55</jsch.version>
         <commons-net.version>3.6</commons-net.version>
         <okhttp.version>4.3.1</okhttp.version>
-        <druid.version>1.2.6</druid.version>
+        <druid.version>1.2.8</druid.version>
     </properties>
 
     <dependencies>

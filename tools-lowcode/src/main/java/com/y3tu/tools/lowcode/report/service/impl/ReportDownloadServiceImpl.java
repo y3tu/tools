@@ -1,21 +1,21 @@
 package com.y3tu.tools.lowcode.report.service.impl;
 
-import cn.hutool.core.util.ZipUtil;
-import com.y3tu.tool.core.io.FileUtil;
-import com.y3tu.tool.core.util.JsonUtil;
-import com.y3tu.tool.lowcode.report.configure.ReportProperties;
-import com.y3tu.tool.lowcode.report.entity.domain.Report;
-import com.y3tu.tool.lowcode.report.entity.domain.ReportDownload;
-import com.y3tu.tool.lowcode.report.entity.dto.ReportDto;
-import com.y3tu.tool.lowcode.report.entity.dto.ReportParamDto;
-import com.y3tu.tool.lowcode.report.exception.ReportException;
-import com.y3tu.tool.lowcode.report.repository.ReportDownloadRepository;
-import com.y3tu.tool.lowcode.report.service.ReportDownloadService;
-import com.y3tu.tool.lowcode.report.service.ReportService;
-import com.y3tu.tool.lowcode.websocket.MessageEndPoint;
-import com.y3tu.tool.web.base.jpa.BaseServiceImpl;
-import com.y3tu.tool.web.base.jpa.PageInfo;
-import com.y3tu.tool.web.file.service.RemoteFileHelper;
+import com.y3tu.tools.kit.base.JsonUtil;
+import com.y3tu.tools.kit.io.FileUtil;
+import com.y3tu.tools.lowcode.base.BaseServiceImpl;
+import com.y3tu.tools.lowcode.base.PageInfo;
+import com.y3tu.tools.lowcode.exception.LowCodeException;
+import com.y3tu.tools.lowcode.report.configure.ReportProperties;
+import com.y3tu.tools.lowcode.report.entity.domain.Report;
+import com.y3tu.tools.lowcode.report.entity.domain.ReportDownload;
+import com.y3tu.tools.lowcode.report.entity.dto.ReportDto;
+import com.y3tu.tools.lowcode.report.entity.dto.ReportParamDto;
+import com.y3tu.tools.lowcode.report.repository.ReportDownloadRepository;
+import com.y3tu.tools.lowcode.report.service.ReportDownloadService;
+import com.y3tu.tools.lowcode.report.service.ReportService;
+import com.y3tu.tools.lowcode.websocket.MessageEndPoint;
+import com.y3tu.tools.web.storge.RemoteFileHelper;
+import com.y3tu.tools.kit.io.ZipUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,7 +100,7 @@ public class ReportDownloadServiceImpl extends BaseServiceImpl<ReportDownloadRep
             int reportId = reportDownload.getReportId();
             Report report = reportService.getById(reportId);
             String paramJson = reportDownload.getParamJson();
-            List<ReportParamDto> params = JsonUtil.parseArray(paramJson, ReportParamDto.class);
+            List<ReportParamDto> params = JsonUtil.parseList(paramJson, ReportParamDto.class);
             ReportDto reportDto = new ReportDto();
             BeanUtils.copyProperties(report, reportDto);
             reportDto.setParams(params);
@@ -116,13 +116,13 @@ public class ReportDownloadServiceImpl extends BaseServiceImpl<ReportDownloadRep
             //生成报表文件
             reportService.exportExcel(reportDto, fileOutputStream);
             //压缩报表文件
-            ZipUtil.zip(tempFilePathExcel, tempFilePathZip, StandardCharsets.UTF_8, false);
+            ZipUtil.toZip(tempFilePathExcel, tempFilePathZip, false);
             //上传到远程服务器上
             boolean flag = remoteFileHelper.upload(properties.getReportRemotePath(), tempFileNameZip, tempFilePathZip);
             //更新report_download表状态
             if (flag) {
                 //删除本地服务器报表压缩文件
-                FileUtil.del(tempFilePathZip);
+                FileUtil.del(new File(tempFilePathZip));
                 reportDownload.setRemoteFilePath(properties.getReportRemotePath() + tempFileNameZip);
                 reportDownload.setRealFileName(tempFileName);
                 reportDownload.setStatus(ReportDownload.STATUS_NORMAL);
@@ -141,7 +141,7 @@ public class ReportDownloadServiceImpl extends BaseServiceImpl<ReportDownloadRep
             reportDownload.setUpdateTime(new Date());
             this.update(reportDownload);
             log.error(e.getMessage(), e);
-            throw new ReportException("报表生成失败!:" + e.getMessage());
+            throw new LowCodeException("报表生成失败!:" + e.getMessage());
         }
 
     }
@@ -151,7 +151,7 @@ public class ReportDownloadServiceImpl extends BaseServiceImpl<ReportDownloadRep
         ReportDownload reportDownload = this.getById(id);
         Report report = reportService.getById(reportDownload.getReportId());
         if (!reportDownload.getStatus().equals(ReportDownload.STATUS_NORMAL)) {
-            throw new ReportException("报表还未生成好，请稍后下载！");
+            throw new LowCodeException("报表还未生成好，请稍后下载！");
         }
         //先判断报表文件是否已经在服务器临时目录
         String filePath = FileUtil.SYS_TEM_DIR + File.separator + reportDownload.getRealFileName() + ".xlsx";
@@ -162,9 +162,9 @@ public class ReportDownloadServiceImpl extends BaseServiceImpl<ReportDownloadRep
             boolean flag = remoteFileHelper.download(reportDownload.getRemoteFilePath(), filePathZip);
             if (flag) {
                 //解压报表文件
-                ZipUtil.unzip(filePathZip, FileUtil.SYS_TEM_DIR + File.separator, StandardCharsets.UTF_8);
+                ZipUtil.unZip(new File(filePathZip), FileUtil.SYS_TEM_DIR + File.separator, StandardCharsets.UTF_8);
                 //删除压缩文件
-                FileUtil.del(filePathZip);
+                FileUtil.del(new File(filePathZip));
                 //更新下载次数
                 reportDownload.setDownloadTimes(reportDownload.getDownloadTimes() + 1);
                 this.update(reportDownload);
@@ -175,7 +175,7 @@ public class ReportDownloadServiceImpl extends BaseServiceImpl<ReportDownloadRep
                 reportDownload.setUpdateTime(new Date());
                 reportDownload.setStatus(ReportDownload.STATUS_ERROR);
                 this.update(reportDownload);
-                throw new ReportException("远程下载报表文件异常!");
+                throw new LowCodeException("远程下载报表文件异常!");
             }
         } else {
             reportDownload.setDownloadTimes(reportDownload.getDownloadTimes() + 1);

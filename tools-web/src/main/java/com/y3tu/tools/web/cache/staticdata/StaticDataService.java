@@ -1,6 +1,6 @@
 package com.y3tu.tools.web.cache.staticdata;
 
-import com.y3tu.tools.kit.base.BeanCacheUtil;
+import com.y3tu.tools.kit.base.BeanUtil;
 import com.y3tu.tools.kit.collection.ArrayUtil;
 import com.y3tu.tools.kit.concurrent.thread.ThreadUtil;
 import com.y3tu.tools.kit.exception.ToolException;
@@ -12,8 +12,6 @@ import com.y3tu.tools.web.cache.annotation.StaticData;
 import com.y3tu.tools.web.cache.core.Cache;
 import com.y3tu.tools.web.cache.manager.CacheManager;
 import com.y3tu.tools.web.cache.setting.LayerCacheSetting;
-import com.y3tu.tools.web.cache.setting.LocalCacheSetting;
-import com.y3tu.tools.web.cache.setting.RedisCacheSetting;
 import com.y3tu.tools.web.cache.staticdata.dto.StaticDataConfig;
 import com.y3tu.tools.web.cache.staticdata.handler.StaticDataHandler;
 import lombok.Data;
@@ -168,7 +166,7 @@ public class StaticDataService {
     public void loadStaticData(StaticDataConfig config) {
         try {
             Cache cache = cacheManager.getCache(config.getName(), config.getLayerCacheSetting());
-            StaticDataHandler staticDataHandler = BeanCacheUtil.getBean(config.getStaticDataHandler());
+            StaticDataHandler staticDataHandler = BeanUtil.getBean(config.getStaticDataHandler());
             if (config.getCacheData() != null) {
                 staticDataHandler.handler(config.getKey(), cache, config.getCacheData());
             } else {
@@ -270,7 +268,7 @@ public class StaticDataService {
             if (context.getBean(clazz) != null) {
                 targetObj = context.getBean(clazz);
             } else {
-                targetObj = BeanCacheUtil.getBean(clazz);
+                targetObj = BeanUtil.getBean(clazz);
             }
             return method.invoke(targetObj);
         } catch (Exception e) {

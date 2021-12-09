@@ -3,6 +3,7 @@ package com.y3tu.tools.lowcode.report.service.impl;
 import com.y3tu.tools.kit.io.FileUtil;
 import com.y3tu.tools.lowcode.common.service.DataSourceService;
 import com.y3tu.tools.lowcode.common.util.DataSourceUtil;
+import com.y3tu.tools.lowcode.exception.LowCodeException;
 import com.y3tu.tools.lowcode.report.entity.domain.ReportAttachment;
 import com.y3tu.tools.lowcode.report.entity.dto.ReportDto;
 import com.y3tu.tools.lowcode.report.entity.dto.ReportParamDto;
@@ -55,7 +56,7 @@ public class JasperReportServiceImpl implements JasperReportService {
             return JasperReportUtil.exportToHtml(jasperPrint);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ReportException("查询jasper报表数据失败！" + e.getMessage());
+            throw new LowCodeException("查询jasper报表数据失败！" + e.getMessage());
         }
     }
 
@@ -67,7 +68,7 @@ public class JasperReportServiceImpl implements JasperReportService {
             JasperReportUtil.exportToExcel(jasperPrint, reportDto.getName(), reportDto.getName(), response);
         }catch (Exception e){
             log.error(e.getMessage(), e);
-            throw new ReportException("导出jasper报表失败！" + e.getMessage());
+            throw new LowCodeException("导出jasper报表失败！" + e.getMessage());
         }
     }
 
@@ -79,7 +80,7 @@ public class JasperReportServiceImpl implements JasperReportService {
             JasperReportUtil.exportToExcel(jasperPrint, reportDto.getName(), reportDto.getName(), outputStream);
         }catch (Exception e){
             log.error(e.getMessage(), e);
-            throw new ReportException("导出jasper报表失败！" + e.getMessage());
+            throw new LowCodeException("导出jasper报表失败！" + e.getMessage());
         }
     }
 
@@ -122,7 +123,7 @@ public class JasperReportServiceImpl implements JasperReportService {
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ReportException("获取Jasper模板文件异常,请检查文件！");
+            throw new LowCodeException("获取Jasper模板文件异常,请检查文件！");
         }
         return result;
     }

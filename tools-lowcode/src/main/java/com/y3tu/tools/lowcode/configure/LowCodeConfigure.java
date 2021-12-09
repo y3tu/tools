@@ -1,17 +1,15 @@
 package com.y3tu.tools.lowcode.configure;
 
-import com.y3tu.tool.lowcode.report.entity.constant.RemoteMode;
-import com.y3tu.tool.lowcode.report.exception.ReportException;
-import com.y3tu.tool.web.file.ftp.FtpFactory;
-import com.y3tu.tool.web.file.ftp.FtpHelper;
-import com.y3tu.tool.web.file.ftp.FtpPool;
-import com.y3tu.tool.web.file.properties.FtpProperties;
-import com.y3tu.tool.web.file.properties.SftpProperties;
-import com.y3tu.tool.web.file.service.RemoteFileHelper;
-import com.y3tu.tool.web.file.sftp.SftpFactory;
-import com.y3tu.tool.web.file.sftp.SftpHelper;
-import com.y3tu.tool.web.file.sftp.SftpPool;
-import org.springframework.beans.BeanUtils;
+import com.y3tu.tools.kit.pool.support.BoundedBlockingPool;
+import com.y3tu.tools.kit.pool.support.PoolFactoryUtil;
+import com.y3tu.tools.kit.time.DateUnit;
+import com.y3tu.tools.lowcode.exception.LowCodeException;
+import com.y3tu.tools.lowcode.report.entity.constant.RemoteMode;
+import com.y3tu.tools.web.storge.RemoteFileHelper;
+import com.y3tu.tools.web.storge.ftp.FtpHelper;
+import com.y3tu.tools.web.storge.ftp.FtpPoolFactory;
+import com.y3tu.tools.web.storge.sftp.SftpHelper;
+import com.y3tu.tools.web.storge.sftp.SftpPoolFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -26,7 +24,7 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
  * @author y3tu
  */
 @Configuration
-@ComponentScan("com.y3tu.tool.lowcode")
+@ComponentScan("com.y3tu.tools.lowcode")
 @EnableConfigurationProperties(RemoteProperties.class)
 public class LowCodeConfigure {
 
@@ -48,29 +46,26 @@ public class LowCodeConfigure {
     RemoteFileHelper remoteFileHelper() {
         if (remoteProperties.getRemoteMode() != RemoteMode.CUSTOMIZE) {
             if (remoteProperties.getHost() == null || remoteProperties.getPort() == 0 || remoteProperties.getUsername() == null || remoteProperties.getPassword() == null) {
-                throw new ReportException("请检查远程存储服务配置!");
+                throw new LowCodeException("请检查远程存储服务配置!");
             }
         }
         if (remoteProperties.getRemoteMode() == RemoteMode.SFTP) {
             //创建SFTP连接池和sftpHelper
-            SftpProperties sftpProperties = new SftpProperties();
-            BeanUtils.copyProperties(remoteProperties, sftpProperties);
-            SftpFactory sftpFactory = new SftpFactory(sftpProperties);
-            SftpPool sftpPool = new SftpPool(sftpFactory);
-            SftpHelper sftpHelper = new SftpHelper(sftpPool);
-            return sftpHelper;
+            SftpPoolFactory sftpPoolFactory = new SftpPoolFactory(remoteProperties.getHost(),
+                    remoteProperties.getPort(), remoteProperties.getUsername(), remoteProperties.getPassword(), null);
+            BoundedBlockingPool boundedBlockingPool = PoolFactoryUtil.newBoundedBlockingPool(20, 50, 2, DateUnit.MINUTE, sftpPoolFactory);
+            return new SftpHelper(boundedBlockingPool);
         } else if (remoteProperties.getRemoteMode() == RemoteMode.FTP) {
             //创建FTP连接池和ftpHelper
-            FtpProperties ftpProperties = new FtpProperties();
-            BeanUtils.copyProperties(remoteProperties, ftpProperties);
-            FtpFactory ftpFactory = new FtpFactory(ftpProperties);
-            FtpPool ftpPool = new FtpPool(ftpFactory);
-            FtpHelper ftpHelper = new FtpHelper(ftpPool);
-            return ftpHelper;
+            FtpPoolFactory ftpPoolFactory = new FtpPoolFactory(remoteProperties.getHost(),
+                    remoteProperties.getPort(), remoteProperties.getUsername(), remoteProperties.getPassword(), null);
+            BoundedBlockingPool boundedBlockingPool = PoolFactoryUtil.newBoundedBlockingPool(20, 50, 2, DateUnit.MINUTE, ftpPoolFactory);
+            return new FtpHelper(boundedBlockingPool);
         } else {
             //自定义模式 如果是自定义模式，用户需要实现RemoteFileHelper接口,并注入到spring容器中
-            throw new ReportException("自定义远程存取服务需要实现RemoteFileHelper接口，并注入到spring容器中");
+            throw new LowCodeException("自定义远程存取服务需要实现RemoteFileHelper接口，并注入到spring容器中");
         }
+
     }
 
 }

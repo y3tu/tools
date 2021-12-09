@@ -1,11 +1,13 @@
 package com.y3tu.tools.lowcode.common.util;
 
-import com.y3tu.tool.core.collection.CollectionUtil;
-import com.y3tu.tool.core.util.ObjectUtil;
-import com.y3tu.tool.lowcode.common.entity.domain.DictData;
-import com.y3tu.tool.lowcode.common.service.DictService;
-import com.y3tu.tool.lowcode.report.exception.ReportException;
-import com.y3tu.tool.web.util.SpringContextUtil;
+
+import com.y3tu.tools.kit.base.ObjectUtil;
+import com.y3tu.tools.kit.collection.CollectionUtil;
+import com.y3tu.tools.kit.reflect.ReflectUtil;
+import com.y3tu.tools.lowcode.common.entity.domain.DictData;
+import com.y3tu.tools.lowcode.common.service.DictService;
+import com.y3tu.tools.lowcode.exception.LowCodeException;
+import com.y3tu.tools.web.util.SpringContextUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,17 +60,15 @@ public class DictUtil {
         if (CollectionUtil.isNotEmpty(list)) {
             for (Object obj : list) {
                 try {
-                    Object value = BeanUtil.getFieldValue(obj, valueProperty);
+                    Object value = ReflectUtil.getFieldValue(obj, valueProperty);
                     List<DictData> dictDataList = getDictData(code, value);
                     if (dictDataList.size() > 0) {
                         Map<String, DictData> dictDataMap = listToMap(dictDataList);
                         DictData dictData = dictDataMap.get(value.toString());
-                        BeanUtil.setFieldValue(obj, nameProperty, dictData.getName());
+                        ReflectUtil.setFieldValue(obj, nameProperty, dictData.getName());
                     }
-                } catch (ReportException e) {
-                    throw new ReportException(e.getMessage(), e);
                 } catch (Exception e) {
-                    throw new ReportException("根据字典填充实体对象失败", e);
+                    throw new LowCodeException("根据字典填充实体对象失败", e);
                 }
             }
         }

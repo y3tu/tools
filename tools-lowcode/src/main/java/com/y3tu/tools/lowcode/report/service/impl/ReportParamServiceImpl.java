@@ -1,9 +1,9 @@
 package com.y3tu.tools.lowcode.report.service.impl;
 
-import com.y3tu.tool.lowcode.report.entity.domain.ReportParam;
-import com.y3tu.tool.lowcode.report.repository.ReportParamRepository;
-import com.y3tu.tool.lowcode.report.service.ReportParamService;
-import com.y3tu.tool.web.base.jpa.BaseServiceImpl;
+import com.y3tu.tools.lowcode.base.BaseServiceImpl;
+import com.y3tu.tools.lowcode.report.entity.domain.ReportParam;
+import com.y3tu.tools.lowcode.report.repository.ReportParamRepository;
+import com.y3tu.tools.lowcode.report.service.ReportParamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;

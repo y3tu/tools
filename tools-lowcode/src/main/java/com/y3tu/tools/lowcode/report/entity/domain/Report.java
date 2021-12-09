@@ -1,6 +1,7 @@
 package com.y3tu.tools.lowcode.report.entity.domain;
 
-import com.y3tu.tool.web.base.jpa.BaseEntity;
+import com.y3tu.tools.lowcode.annotation.Query;
+import com.y3tu.tools.lowcode.base.BaseEntity;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -8,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 

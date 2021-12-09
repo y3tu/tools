@@ -1,0 +1,19 @@
+package com.y3tu.tools.lowcode;
+
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = LowCodeApplication.class,webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Slf4j
+public class LowCodeApplicationTest {
+
+    @Test
+    public void test(){
+
+    }
+}

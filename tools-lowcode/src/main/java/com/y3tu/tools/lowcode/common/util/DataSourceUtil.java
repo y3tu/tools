@@ -3,6 +3,9 @@ package com.y3tu.tools.lowcode.common.util;
 
 import com.y3tu.tools.lowcode.common.entity.domain.DataSource;
 import com.y3tu.tools.lowcode.common.service.DataSourceService;
+import com.y3tu.tools.web.sql.ds.DataSourceWrapper;
+import com.y3tu.tools.web.sql.ds.DbConfig;
+import com.y3tu.tools.web.sql.ds.DsFactory;
 import com.y3tu.tools.web.util.SpringContextUtil;
 
 /**
@@ -33,14 +36,15 @@ public class DataSourceUtil {
      */
     public static javax.sql.DataSource getDataSource(DataSource dataSource) {
 
-        Setting setting = new Setting();
+        DbConfig dbConfig = new DbConfig();
 
-        setting.set("url", dataSource.getDbUrl())
-                .set("driver", dataSource.getDbDriver())
-                .set("user", dataSource.getDbUsername())
-                .set("pass", dataSource.getDbPassword());
+        dbConfig.setUrl(dataSource.getDbUrl());
+        dbConfig.setDriver(dataSource.getDbDriver());
+        dbConfig.setUser(dataSource.getDbUsername());
+        dbConfig.setPass(dataSource.getDbPassword());
 
-        DSFactory dsFactory = DSFactory.create(setting);
+
+        DsFactory dsFactory = DsFactory.create(dbConfig);
         DataSourceWrapper dataSourceWrapper = (DataSourceWrapper) dsFactory.getDataSource();
         javax.sql.DataSource ds = dataSourceWrapper.getRaw();
         return ds;

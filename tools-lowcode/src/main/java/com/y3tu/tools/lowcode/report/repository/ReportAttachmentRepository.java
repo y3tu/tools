@@ -1,7 +1,8 @@
 package com.y3tu.tools.lowcode.report.repository;
 
-import com.y3tu.tool.lowcode.report.entity.domain.ReportAttachment;
-import com.y3tu.tool.web.base.jpa.BaseRepository;
+
+import com.y3tu.tools.lowcode.base.BaseRepository;
+import com.y3tu.tools.lowcode.report.entity.domain.ReportAttachment;
 
 import java.util.List;
 

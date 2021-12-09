@@ -1,0 +1,78 @@
+server:
+  port: 80
+
+spring:
+  datasource:
+    druid:
+      stat-view-servlet:
+        loginUsername: admin
+        loginPassword: 123456
+    dynamic:
+      druid:
+        initial-size: 3
+        max-active: 100
+        min-idle: 2
+        max-wait: -1
+        min-evictable-idle-time-millis: 30000
+        max-evictable-idle-time-millis: 30000
+        time-between-eviction-runs-millis: 0
+        validation-query: select 1
+        validation-query-timeout: -1
+        test-on-borrow: false
+        test-on-return: false
+        test-while-idle: true
+        pool-prepared-statements: true
+        filters: stat,wall
+        share-prepared-statements: true
+        max-pool-prepared-statement-per-connection-size: 100
+      datasource:
+        support:
+          username: root
+          password: root
+          driver-class-name: com.mysql.jdbc.Driver
+          url: jdbc:mysql://cdb-plx1fn42.cd.tencentcdb.com:10149/yao-support??allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+        report:
+          username: root
+          password: root
+          driver-class-name: com.mysql.jdbc.Driver
+          url: jdbc:mysql://cdb-plx1fn42.cd.tencentcdb.com:10149/yao-report??allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+        blog:
+          username: root
+          password: root
+          driver-class-name: com.mysql.jdbc.Driver
+          url: jdbc:mysql://cdb-plx1fn42.cd.tencentcdb.com:10149/yao-blog??allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+      primary: support
+
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6378
+    password: y3tu
+    lettuce:
+      pool:
+        min-idle: 8
+        max-idle: 500
+        max-active: 2000
+        max-wait: 10000
+    timeout: 500000
+
+y3tu:
+  tool:
+    cache:
+      enableApi: true
+      cacheMode: all
+      stats: true
+    lowcode:
+      ui:
+        urlPattern: /tool/*
+      remote:
+        host: 127.0.0.1
+        port: 22
+        username: root
+        password: root
+        remoteMode: sftp
+
+
+
+
+

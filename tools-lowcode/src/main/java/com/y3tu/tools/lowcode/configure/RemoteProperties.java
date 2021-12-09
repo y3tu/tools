@@ -1,6 +1,6 @@
 package com.y3tu.tools.lowcode.configure;
 
-import com.y3tu.tool.lowcode.report.entity.constant.RemoteMode;
+import com.y3tu.tools.lowcode.report.entity.constant.RemoteMode;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -41,4 +41,5 @@ public class RemoteProperties {
      * 连接最长等待时间 默认30秒
      */
     private int maxWaitMillis = 30000;
+
 }

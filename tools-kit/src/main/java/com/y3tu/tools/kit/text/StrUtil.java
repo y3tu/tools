@@ -10,6 +10,8 @@ import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -245,6 +247,106 @@ public class StrUtil implements StrPool {
     }
 
     /**
+     * 如果给定字符串不是以给定的一个或多个字符串为开头，则在首部添加起始字符串
+     *
+     * @param str        被检查的字符串
+     * @param prefix     需要添加到首部的字符串
+     * @param ignoreCase 检查结尾时是否忽略大小写
+     * @param prefixes   需要额外检查的首部字符串，如果以这些中的一个为起始，则不再添加
+     * @return 如果已经结尾，返回原字符串，否则返回添加结尾的字符串
+     */
+    public static String prependIfMissing(CharSequence str, CharSequence prefix, boolean ignoreCase, CharSequence... prefixes) {
+        if (str == null || isEmpty(prefix) || startWith(str, prefix, ignoreCase,false)) {
+            return str.toString();
+        }
+        if (prefixes != null && prefixes.length > 0) {
+            for (final CharSequence s : prefixes) {
+                if (startWith(str, s, ignoreCase,false)) {
+                    return str.toString();
+                }
+            }
+        }
+        return prefix.toString().concat(str.toString());
+    }
+
+    /**
+     * 是否以指定字符串开头<br>
+     * 如果给定的字符串和开头字符串都为null则返回true，否则任意一个值为null返回false
+     *
+     * @param str          被监测字符串
+     * @param prefix       开头字符串
+     * @param ignoreCase   是否忽略大小写
+     * @param ignoreEquals 是否忽略字符串相等的情况
+     * @return 是否以指定字符串开头
+     */
+    public static boolean startWith(CharSequence str, CharSequence prefix, boolean ignoreCase, boolean ignoreEquals) {
+        if (null == str || null == prefix) {
+            if (!ignoreEquals) {
+                return false;
+            }
+            return null == str && null == prefix;
+        }
+
+        boolean isStartWith;
+        if (ignoreCase) {
+            isStartWith = str.toString().toLowerCase().startsWith(prefix.toString().toLowerCase());
+        } else {
+            isStartWith = str.toString().startsWith(prefix.toString());
+        }
+
+        if (isStartWith) {
+            return (!ignoreEquals) || (!equals(str, prefix, ignoreCase));
+        }
+        return false;
+    }
+
+    /**
+     * 是否以指定字符串结尾<br>
+     * 如果给定的字符串和开头字符串都为null则返回true，否则任意一个值为null返回false
+     *
+     * @param str          被监测字符串
+     * @param suffix       结尾字符串
+     * @param isIgnoreCase 是否忽略大小写
+     * @return 是否以指定字符串结尾
+     */
+    public static boolean endWith(CharSequence str, CharSequence suffix, boolean isIgnoreCase) {
+        if (null == str || null == suffix) {
+            return null == str && null == suffix;
+        }
+
+        if (isIgnoreCase) {
+            return str.toString().toLowerCase().endsWith(suffix.toString().toLowerCase());
+        } else {
+            return str.toString().endsWith(suffix.toString());
+        }
+    }
+
+    /**
+     * 比较两个字符串是否相等。
+     *
+     * @param str1       要比较的字符串1
+     * @param str2       要比较的字符串2
+     * @param ignoreCase 是否忽略大小写
+     * @return 如果两个字符串相同，或者都是{@code null}，则返回{@code true}
+     */
+    public static boolean equals(CharSequence str1, CharSequence str2, boolean ignoreCase) {
+        if (null == str1) {
+            // 只有两个都为null才判断相等
+            return str2 == null;
+        }
+        if (null == str2) {
+            // 字符串2空，字符串1非空，直接false
+            return false;
+        }
+
+        if (ignoreCase) {
+            return str1.toString().equalsIgnoreCase(str2.toString());
+        } else {
+            return str1.toString().contentEquals(str2);
+        }
+    }
+
+    /**
      * 查找指定字符串是否包含指定字符串列表中的任意一个字符串
      *
      * @param str     字符串
@@ -468,5 +570,102 @@ public class StrUtil implements StrPool {
             builder.append(str);
         }
         return builder.toString();
+    }
+
+    /**
+     * 截取指定字符串多段中间部分，不包括标识字符串<br>
+     * <p>
+     * 栗子：
+     *
+     * <pre>
+     * StrUtil.subBetweenAll("wx[b]y[z]", "[", "]") 		= ["b","z"]
+     * StrUtil.subBetweenAll(null, *, *)          			= []
+     * StrUtil.subBetweenAll(*, null, *)          			= []
+     * StrUtil.subBetweenAll(*, *, null)          			= []
+     * StrUtil.subBetweenAll("", "", "")          			= []
+     * StrUtil.subBetweenAll("", "", "]")         			= []
+     * StrUtil.subBetweenAll("", "[", "]")        			= []
+     * StrUtil.subBetweenAll("yabcz", "", "")     			= []
+     * StrUtil.subBetweenAll("yabcz", "y", "z")   			= ["abc"]
+     * StrUtil.subBetweenAll("yabczyabcz", "y", "z")   		= ["abc","abc"]
+     * StrUtil.subBetweenAll("[yabc[zy]abcz]", "[", "]");   = ["zy"]           重叠时只截取内部，
+     * </pre>
+     *
+     * @param str    被切割的字符串
+     * @param prefix 截取开始的字符串标识
+     * @param suffix 截取到的字符串标识
+     * @return 截取后的字符串
+     */
+    public static String[] subBetweenAll(CharSequence str, CharSequence prefix, CharSequence suffix) {
+
+        final List<String> result = new LinkedList<>();
+        final String[] split = str.toString().split(prefix.toString());
+        if (prefix.equals(suffix)) {
+            // 前后缀字符相同，单独处理
+            for (int i = 1, length = split.length - 1; i < length; i += 2) {
+                result.add(split[i]);
+            }
+        } else {
+            int suffixIndex;
+            for (String fragment : split) {
+                suffixIndex = fragment.indexOf(suffix.toString());
+                if (suffixIndex > 0) {
+                    result.add(fragment.substring(0, suffixIndex));
+                }
+            }
+        }
+
+        return result.toArray(new String[0]);
+    }
+
+    /**
+     * 改进JDK subString<br>
+     * index从0开始计算，最后一个字符为-1<br>
+     * 如果from和to位置一样，返回 "" <br>
+     * 如果from或to为负数，则按照length从后向前数位置，如果绝对值大于字符串长度，则from归到0，to归到length<br>
+     * 如果经过修正的index中from大于to，则互换from和to example: <br>
+     * abcdefgh 2 3 =》 c <br>
+     * abcdefgh 2 -3 =》 cde <br>
+     *
+     * @param str              String
+     * @param fromIndexInclude 开始的index（包括）
+     * @param toIndexExclude   结束的index（不包括）
+     * @return 字串
+     */
+    public static String sub(CharSequence str, int fromIndexInclude, int toIndexExclude) {
+        if (isEmpty(str)) {
+            return str.toString();
+        }
+        int len = str.length();
+
+        if (fromIndexInclude < 0) {
+            fromIndexInclude = len + fromIndexInclude;
+            if (fromIndexInclude < 0) {
+                fromIndexInclude = 0;
+            }
+        } else if (fromIndexInclude > len) {
+            fromIndexInclude = len;
+        }
+
+        if (toIndexExclude < 0) {
+            toIndexExclude = len + toIndexExclude;
+            if (toIndexExclude < 0) {
+                toIndexExclude = len;
+            }
+        } else if (toIndexExclude > len) {
+            toIndexExclude = len;
+        }
+
+        if (toIndexExclude < fromIndexInclude) {
+            int tmp = fromIndexInclude;
+            fromIndexInclude = toIndexExclude;
+            toIndexExclude = tmp;
+        }
+
+        if (fromIndexInclude == toIndexExclude) {
+            return EMPTY;
+        }
+
+        return str.toString().substring(fromIndexInclude, toIndexExclude);
     }
 }

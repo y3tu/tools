@@ -1,6 +1,6 @@
 package com.y3tu.tools.lowcode.websocket;
 
-import com.y3tu.tool.core.util.JsonUtil;
+import com.y3tu.tools.kit.base.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

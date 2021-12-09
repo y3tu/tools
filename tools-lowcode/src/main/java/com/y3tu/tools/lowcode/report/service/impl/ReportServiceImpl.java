@@ -1,28 +1,28 @@
 package com.y3tu.tools.lowcode.report.service.impl;
 
-import com.y3tu.tool.core.io.FileUtil;
-import com.y3tu.tool.core.pojo.R;
-import com.y3tu.tool.core.util.StrUtil;
-import com.y3tu.tool.lowcode.common.service.DataSourceService;
-import com.y3tu.tool.lowcode.common.util.DataSourceUtil;
-import com.y3tu.tool.lowcode.report.configure.ReportProperties;
-import com.y3tu.tool.lowcode.report.entity.domain.Report;
-import com.y3tu.tool.lowcode.report.entity.domain.ReportAttachment;
-import com.y3tu.tool.lowcode.report.entity.domain.ReportParam;
-import com.y3tu.tool.lowcode.report.entity.dto.ReportDto;
-import com.y3tu.tool.lowcode.report.entity.dto.ReportParamDto;
-import com.y3tu.tool.lowcode.report.exception.ReportException;
-import com.y3tu.tool.lowcode.report.repository.ReportRepository;
-import com.y3tu.tool.lowcode.report.service.CommonReportService;
-import com.y3tu.tool.lowcode.report.service.JasperReportService;
-import com.y3tu.tool.lowcode.report.service.ReportAttachmentService;
-import com.y3tu.tool.lowcode.report.service.ReportParamService;
-import com.y3tu.tool.lowcode.report.service.ReportService;
-import com.y3tu.tool.lowcode.report.util.JasperReportUtil;
-import com.y3tu.tool.web.base.jpa.BaseServiceImpl;
-import com.y3tu.tool.web.base.jpa.PageInfo;
-import com.y3tu.tool.web.file.service.RemoteFileHelper;
-import com.y3tu.tool.web.sql.SqlUtil;
+import com.y3tu.tools.kit.io.FileUtil;
+import com.y3tu.tools.kit.lang.R;
+import com.y3tu.tools.kit.text.StrUtil;
+import com.y3tu.tools.lowcode.base.BaseServiceImpl;
+import com.y3tu.tools.lowcode.base.PageInfo;
+import com.y3tu.tools.lowcode.common.service.DataSourceService;
+import com.y3tu.tools.lowcode.common.util.DataSourceUtil;
+import com.y3tu.tools.lowcode.exception.LowCodeException;
+import com.y3tu.tools.lowcode.report.configure.ReportProperties;
+import com.y3tu.tools.lowcode.report.entity.domain.Report;
+import com.y3tu.tools.lowcode.report.entity.domain.ReportAttachment;
+import com.y3tu.tools.lowcode.report.entity.domain.ReportParam;
+import com.y3tu.tools.lowcode.report.entity.dto.ReportDto;
+import com.y3tu.tools.lowcode.report.entity.dto.ReportParamDto;
+import com.y3tu.tools.lowcode.report.repository.ReportRepository;
+import com.y3tu.tools.lowcode.report.service.CommonReportService;
+import com.y3tu.tools.lowcode.report.service.JasperReportService;
+import com.y3tu.tools.lowcode.report.service.ReportAttachmentService;
+import com.y3tu.tools.lowcode.report.service.ReportParamService;
+import com.y3tu.tools.lowcode.report.service.ReportService;
+import com.y3tu.tools.lowcode.report.util.JasperReportUtil;
+import com.y3tu.tools.web.sql.SqlUtil;
+import com.y3tu.tools.web.storge.RemoteFileHelper;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JasperReport;
 import org.springframework.beans.BeanUtils;
@@ -35,6 +35,7 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.HashMap;
@@ -81,7 +82,7 @@ public class ReportServiceImpl extends BaseServiceImpl<ReportRepository, Report>
             String tempFilePath = FileUtil.SYS_TEM_DIR + tempFileName;
             boolean flag = remoteFileHelper.upload(properties.getTemplateRemotePath(), tempFileName, tempFilePath);
             //删除临时目录文件
-            FileUtil.del(tempFilePath);
+            FileUtil.del(new File(tempFilePath));
             if (flag) {
                 //文件上传成功
                 ReportAttachment reportAttachment = new ReportAttachment();
@@ -93,7 +94,7 @@ public class ReportServiceImpl extends BaseServiceImpl<ReportRepository, Report>
                 reportAttachment.setCreateTime(new Date());
                 reportAttachmentService.create(reportAttachment);
             } else {
-                throw new ReportException("文件上传失败！请重新添加报表模板");
+                throw new LowCodeException("文件上传失败！请重新添加报表模板");
             }
         }
     }
@@ -117,7 +118,7 @@ public class ReportServiceImpl extends BaseServiceImpl<ReportRepository, Report>
             String tempFilePath = FileUtil.SYS_TEM_DIR + tempFileName;
             boolean flag = remoteFileHelper.upload(properties.getTemplateRemotePath(), tempFileName, tempFilePath);
             //删除临时目录文件
-            FileUtil.del(tempFilePath);
+            FileUtil.del(new File(tempFilePath));
             if (flag) {
                 //文件上传成功 更新记录
                 List<ReportAttachment> reportAttachmentList = reportAttachmentService.getByReportId(report.getId());
@@ -141,12 +142,12 @@ public class ReportServiceImpl extends BaseServiceImpl<ReportRepository, Report>
                         reportAttachmentService.update(reportAttachment);
                         //删除老附件
                         if (!remoteFileHelper.remove(oldPath)) {
-                            throw new ReportException("删除远程服务器上的附件失败！");
+                            throw new LowCodeException("删除远程服务器上的附件失败！");
                         }
                     }
                 }
             } else {
-                throw new ReportException("文件上传失败！请重新添加报表模板");
+                throw new LowCodeException("文件上传失败！请重新添加报表模板");
             }
         }
     }
@@ -162,7 +163,7 @@ public class ReportServiceImpl extends BaseServiceImpl<ReportRepository, Report>
         reportAttachmentService.deleteByReportId(reportId);
         for (ReportAttachment reportAttachment : reportAttachmentList) {
             if (!remoteFileHelper.remove(reportAttachment.getRemoteFilePath())) {
-                throw new ReportException("删除远程服务器上的附件失败！");
+                throw new LowCodeException("删除远程服务器上的附件失败！");
             }
         }
     }
@@ -212,7 +213,7 @@ public class ReportServiceImpl extends BaseServiceImpl<ReportRepository, Report>
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ReportException("预览报表异常:" + e.getMessage());
+            throw new LowCodeException("预览报表异常:" + e.getMessage());
         }
         return R.success();
     }
@@ -244,7 +245,7 @@ public class ReportServiceImpl extends BaseServiceImpl<ReportRepository, Report>
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ReportException("报表导出excel异常:" + e.getMessage());
+            throw new LowCodeException("报表导出excel异常:" + e.getMessage());
         }
     }
 
@@ -261,7 +262,7 @@ public class ReportServiceImpl extends BaseServiceImpl<ReportRepository, Report>
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ReportException("报表导出excel异常:" + e.getMessage());
+            throw new LowCodeException("报表导出excel异常:" + e.getMessage());
         }
     }
 
@@ -291,7 +292,7 @@ public class ReportServiceImpl extends BaseServiceImpl<ReportRepository, Report>
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ReportException("处理报表sql异常:" + e.getMessage());
+            throw new LowCodeException("处理报表sql异常:" + e.getMessage());
         }
     }
 
@@ -330,7 +331,7 @@ public class ReportServiceImpl extends BaseServiceImpl<ReportRepository, Report>
             //处理$ifnull[]，如果参数值为空，删除$ifnull[]包含的内容
             String[] ifnulls = StrUtil.subBetweenAll(sql, "$ifnull[", "]");
             for (String ifnull : ifnulls) {
-                if (StrUtil.containsIgnoreCase(ifnull, $field)) {
+                if (StrUtil.containsAnyIgnoreCase(ifnull, $field)) {
                     if (StrUtil.isEmpty(result)) {
                         //如果参数值为空,删除$ifnull[]包含的内容
                         sql = sql.replace("$ifnull[" + ifnull + "]", "");

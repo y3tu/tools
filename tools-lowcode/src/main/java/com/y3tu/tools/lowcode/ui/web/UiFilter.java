@@ -1,6 +1,6 @@
 package com.y3tu.tools.lowcode.ui.web;
 
-import com.y3tu.tool.core.util.StrUtil;
+import com.y3tu.tools.kit.text.StrUtil;
 import lombok.Data;
 
 import javax.servlet.Filter;
@@ -37,12 +37,12 @@ public class UiFilter implements Filter {
         String requestUrl = httpRequest.getRequestURI();
 
         if (requestUrl.indexOf(formatUrl(cacheUrlPattern)) > 0) {
-            requestUrl = StrUtil.replace(requestUrl, formatSuffixUrl(uiUrlPattern), "");
+            requestUrl = StrUtil.replace(requestUrl, 0, formatSuffixUrl(uiUrlPattern), "", true);
             httpRequest.getRequestDispatcher(requestUrl).forward(httpRequest, httpResponse);
         } else if (requestUrl.indexOf(formatUrl(lowCodeUrlPattern)) > 0) {
-            int urlIndex =  requestUrl.indexOf(formatSuffixUrl(uiUrlPattern));
-            requestUrl = requestUrl.substring(urlIndex,requestUrl.length());
-            requestUrl = StrUtil.replace(requestUrl, formatSuffixUrl(uiUrlPattern), "");
+            int urlIndex = requestUrl.indexOf(formatSuffixUrl(uiUrlPattern));
+            requestUrl = requestUrl.substring(urlIndex, requestUrl.length());
+            requestUrl = StrUtil.replace(requestUrl, 0, formatSuffixUrl(uiUrlPattern), "", true);
             httpRequest.getRequestDispatcher(requestUrl).forward(httpRequest, httpResponse);
         } else {
             chain.doFilter(httpRequest, httpResponse);
@@ -55,15 +55,15 @@ public class UiFilter implements Filter {
     }
 
     private String formatSuffixUrl(String path) {
-        if (StrUtil.endWith(path, "*")) {
-            path = StrUtil.subPre(path, path.length() - 2);
+        if (StrUtil.endWith(path, "*", false)) {
+            path = StrUtil.sub(path, 0,path.length() - 2);
         }
         return path;
     }
 
     private String formatPrefixUrl(String path) {
-        if (StrUtil.startWith(path, "/")) {
-            path = StrUtil.subSuf(path, 1);
+        if (StrUtil.startWith(path, "/",false,false)) {
+            path = StrUtil.sub(path, 0,1);
         }
         return path;
     }

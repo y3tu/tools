@@ -9,7 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.CopyOption;
+import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
@@ -24,7 +26,7 @@ import java.util.zip.ZipOutputStream;
  * @author y3tu
  */
 @Slf4j
-public class FileUtil {
+public class FileUtil extends PathUtil {
     /**
      * 系统临时目录
      * <br>
@@ -371,4 +373,118 @@ public class FileUtil {
         }
 
     }
+
+    /**
+     * Java文件操作 获取不带扩展名的文件名
+     */
+    public static String getFileNameNoEx(String filename) {
+        if ((filename != null) && (filename.length() > 0)) {
+            int dot = filename.lastIndexOf('.');
+            if ((dot > -1) && (dot < (filename.length()))) {
+                return filename.substring(0, dot);
+            }
+        }
+        return filename;
+    }
+
+    /**
+     * 获取文件扩展名，不带 .
+     *
+     * @param fileName 文件名
+     * @return 文件扩展名，不带 .
+     */
+    public static String getExtensionName(String fileName) {
+        if ((fileName != null) && (fileName.length() > 0)) {
+            int dot = fileName.lastIndexOf('.');
+            if ((dot > -1) && (dot < (fileName.length() - 1))) {
+                return fileName.substring(dot + 1);
+            }
+        }
+        return fileName;
+    }
+
+    /**
+     * 判断文件是否存在，如果path为null，则返回false
+     *
+     * @param path 文件路径
+     * @return 如果存在返回true
+     */
+    public static boolean exist(String path) {
+        return exist(new File(path));
+    }
+
+    /**
+     * 判断文件是否存在，如果file为null，则返回false
+     *
+     * @param file 文件
+     * @return 如果存在返回true
+     */
+    public static boolean exist(File file) {
+        return (null != file) && file.exists();
+    }
+
+    /**
+     * 删除文件或者文件夹<br>
+     * 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹<br>
+     * 某个文件删除失败会终止删除操作
+     *
+     * @param file 文件对象
+     * @return 成功与否
+     * @see Files#delete(Path)
+     */
+    public static boolean del(File file) {
+        if (file == null || !file.exists()) {
+            // 如果文件不存在或已被删除，此处返回true表示删除成功
+            return true;
+        }
+
+        if (file.isDirectory()) {
+            // 清空目录下所有文件和目录
+            boolean isOk = clean(file);
+            if (false == isOk) {
+                return false;
+            }
+        }
+
+        // 删除文件或清空后的目录
+        final Path path = file.toPath();
+        try {
+            delFile(path);
+        } catch (Exception e) {
+            // 遍历清空目录没有成功，此时补充删除一次（可能存在部分软链）
+            try {
+                del(path);
+            } catch (Exception ee) {
+                throw new ToolException("文件删除异常！", e.getMessage());
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * 清空文件夹<br>
+     * 注意：清空文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹<br>
+     * 某个文件删除失败会终止删除操作
+     *
+     * @param directory 文件夹
+     * @return 成功与否
+     */
+    public static boolean clean(File directory) {
+        if (directory == null || !directory.exists() || !directory.isDirectory()) {
+            return true;
+        }
+
+        final File[] files = directory.listFiles();
+        if (null != files) {
+            for (File childFile : files) {
+                if (!del(childFile)) {
+                    // 删除一个出错则本次删除任务失败
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 }

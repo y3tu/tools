@@ -94,7 +94,7 @@ public class DictServiceImpl extends BaseServiceImpl<DictRepository, Dict> imple
                     String whereColumn = dictSql.getWhereColumn();
                     String[] columns = whereColumn.split(",");
                     for (int i = 0; i < targetValue.length; i++) {
-                        sqlText = sqlText + " and " + columns[i] + " in (" + StrUtil.join(",", targetValue) + ") ";
+                       // sqlText = sqlText + " and " + columns[i] + " in (" + StrUtil.join(",", targetValue) + ") ";
                     }
                 }
             } catch (Exception e) {

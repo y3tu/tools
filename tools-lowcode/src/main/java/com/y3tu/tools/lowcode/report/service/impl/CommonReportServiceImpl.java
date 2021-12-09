@@ -55,7 +55,7 @@ public class CommonReportServiceImpl implements CommonReportService {
             Connection connection = ds.getConnection();
 
             //如果sql包含where条件，需要截取
-            int index = StrUtil.indexOfIgnoreCase(sql, "where");
+            int index = StrUtil.indexOf(sql, "where", 0, false);
             if (index > 0) {
                 sql = sql.substring(0, index);
             }
@@ -133,7 +133,8 @@ public class CommonReportServiceImpl implements CommonReportService {
         String tableHeader = reportDto.getTableHeader();
         String sql = reportDto.getQuerySql();
         int dsId = reportDto.getDsId();
-        Map<String, Object> headerMap = getHeader(JSONObject.parseArray(tableHeader));
+        //Map<String, Object> headerMap = getHeader(JSONObject.parseArray(tableHeader));
+        Map<String, Object> headerMap = null;
         List<List<String>> headerList = (List<List<String>>) headerMap.get("headerList");
         List<String> fieldList = (List<String>) headerMap.get("fieldList");
 
@@ -177,35 +178,35 @@ public class CommonReportServiceImpl implements CommonReportService {
     /**
      * 装置excel表头
      */
-    private Map<String, Object> getHeader(JSONArray jsonArray) {
-        Map<String, Object> result = new HashMap<>();
-        List<List<String>> headerList = new ArrayList();
-        List<String> fieldList = new ArrayList<>();
-        int size = jsonArray.size();
-        for (int i = 0; i < size; i++) {
-            List<String> heads = new ArrayList<>();
-            JSONObject object = jsonArray.getJSONObject(i);
-            handleHeaderChildren(headerList, heads, fieldList, object);
-        }
-        result.put("headerList", headerList);
-        result.put("fieldList", fieldList);
-        return result;
-    }
+//    private Map<String, Object> getHeader(JSONArray jsonArray) {
+//        Map<String, Object> result = new HashMap<>();
+//        List<List<String>> headerList = new ArrayList();
+//        List<String> fieldList = new ArrayList<>();
+//        int size = jsonArray.size();
+//        for (int i = 0; i < size; i++) {
+//            List<String> heads = new ArrayList<>();
+//            JSONObject object = jsonArray.getJSONObject(i);
+//            handleHeaderChildren(headerList, heads, fieldList, object);
+//        }
+//        result.put("headerList", headerList);
+//        result.put("fieldList", fieldList);
+//        return result;
+//    }
 
-    private void handleHeaderChildren(List<List<String>> headerList, List<String> list, List<String> fieldList, JSONObject object) {
-        JSONArray jsonArray = object.getJSONArray("children");
-        if (jsonArray != null && !jsonArray.isEmpty()) {
-            int size = jsonArray.size();
-            list.add(object.getString("label"));
-            for (int i = 0; i < size; i++) {
-                handleHeaderChildren(headerList, list, fieldList, jsonArray.getJSONObject(i));
-            }
-        } else {
-            fieldList.add(object.getString("field"));
-            List<String> tempList = new ArrayList<>();
-            tempList.addAll(list);
-            tempList.add(object.getString("label"));
-            headerList.add(tempList);
-        }
-    }
+//    private void handleHeaderChildren(List<List<String>> headerList, List<String> list, List<String> fieldList, JSONObject object) {
+//        JSONArray jsonArray = object.getJSONArray("children");
+//        if (jsonArray != null && !jsonArray.isEmpty()) {
+//            int size = jsonArray.size();
+//            list.add(object.getString("label"));
+//            for (int i = 0; i < size; i++) {
+//                handleHeaderChildren(headerList, list, fieldList, jsonArray.getJSONObject(i));
+//            }
+//        } else {
+//            fieldList.add(object.getString("field"));
+//            List<String> tempList = new ArrayList<>();
+//            tempList.addAll(list);
+//            tempList.add(object.getString("label"));
+//            headerList.add(tempList);
+//        }
+//    }
 }

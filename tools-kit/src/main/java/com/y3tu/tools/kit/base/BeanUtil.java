@@ -5,12 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * bean实例缓存,防止重复创建bean实例
+ * bean工具类
  *
  * @author y3tu
  */
 @Slf4j
-public class BeanCacheUtil {
+public class BeanUtil {
     /**
      * bean 容器
      */
@@ -33,4 +33,5 @@ public class BeanCacheUtil {
             return null;
         });
     }
+
 }

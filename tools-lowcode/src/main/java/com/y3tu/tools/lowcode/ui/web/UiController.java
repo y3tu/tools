@@ -1,8 +1,8 @@
 package com.y3tu.tools.lowcode.ui.web;
 
-import com.y3tu.tool.core.exception.ServerException;
-import com.y3tu.tool.core.pojo.R;
-import com.y3tu.tool.lowcode.ui.configure.UiProperties;
+import com.y3tu.tools.kit.lang.R;
+import com.y3tu.tools.lowcode.exception.LowCodeException;
+import com.y3tu.tools.lowcode.ui.configure.UiProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +36,7 @@ public class UiController {
             //登录成功！
             return R.success(UUID.randomUUID());
         } else {
-            throw new ServerException("用户名或者密码错误！");
+            throw new LowCodeException("用户名或者密码错误！");
         }
     }
 

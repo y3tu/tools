@@ -2,8 +2,11 @@ package com.y3tu.tools.lowcode.report.service.impl;
 
 import com.y3tu.tools.kit.io.FileUtil;
 import com.y3tu.tools.lowcode.base.BaseServiceImpl;
+import com.y3tu.tools.lowcode.exception.LowCodeException;
 import com.y3tu.tools.lowcode.report.entity.domain.ReportAttachment;
 import com.y3tu.tools.lowcode.report.repository.ReportAttachmentRepository;
+import com.y3tu.tools.lowcode.report.service.ReportAttachmentService;
+import com.y3tu.tools.web.util.UploadUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -29,10 +32,10 @@ public class ReportAttachmentServiceImpl extends BaseServiceImpl<ReportAttachmen
         try {
             JasperCompileManager.compileReportToFile(uploadLocalPath, jasperFile);
             //删除临时编译后的文件
-            FileUtil.del(jasperFile);
+            FileUtil.del(new File(jasperFile));
         } catch (JRException e) {
             log.error(e.getMessage(), e);
-            throw new ReportException("上传失败！模板编译异常:" + e.getMessage());
+            throw new LowCodeException("上传失败！模板编译异常:" + e.getMessage());
         }
         return flag;
     }

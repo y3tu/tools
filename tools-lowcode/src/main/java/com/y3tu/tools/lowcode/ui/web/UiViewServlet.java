@@ -1,6 +1,6 @@
 package com.y3tu.tools.lowcode.ui.web;
 
-import com.y3tu.tool.core.http.servlet.AbstractResourceServlet;
+import com.y3tu.tools.web.http.AbstractResourceServlet;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletException;

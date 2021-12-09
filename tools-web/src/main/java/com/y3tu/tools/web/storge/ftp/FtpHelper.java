@@ -2,7 +2,6 @@ package com.y3tu.tools.web.storge.ftp;
 
 import com.y3tu.tools.kit.io.FileUtil;
 import com.y3tu.tools.kit.pool.intf.BlockingPool;
-import com.y3tu.tools.kit.pool.intf.Pool;
 import com.y3tu.tools.kit.system.SystemUtil;
 import com.y3tu.tools.web.storge.RemoteFileHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +31,7 @@ public class FtpHelper implements RemoteFileHelper {
 
     private BlockingPool<FTPClient> ftpPool;
 
-    public FtpHelper(BlockingPool<FTPClient> pool) {
+    public FtpHelper(BlockingPool<FTPClient> ftpPool) {
         this.ftpPool = ftpPool;
     }
 
