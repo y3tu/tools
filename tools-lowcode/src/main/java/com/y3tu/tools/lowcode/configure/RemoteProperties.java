@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author y3tu
  */
 @Data
-@ConfigurationProperties(prefix = "y3tu.tool.lowcode.remote")
+@ConfigurationProperties(prefix = "tools.lowcode.remote")
 public class RemoteProperties {
 
     /**

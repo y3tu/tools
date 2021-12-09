@@ -21,12 +21,15 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnWebApplication
 public class UiAutoConfigure {
 
-    @Value("${y3tu.tool.cache.url-pattern:/y3tu-tool-cache/*}")
-    private String cacheUrlPattern;
+    /**
+     * 程序真正对外的URL前缀
+     */
+    private final String lowCodeUrlPattern = "/tools-lowcode/*";
 
-    private final String lowCodeUrlPattern = "/y3tu-tool-lowcode/*";
-
-    @Value("${y3tu.tool.lowcode.ui.url-pattern:/tool-lowcode-ui/*}")
+    /**
+     * 用户自定义的URL前缀
+     */
+    @Value("${tools.lowcode.ui.url-pattern:/tools-lowcode-ui/*}")
     private String uiUrlPattern;
 
 
@@ -48,13 +51,12 @@ public class UiAutoConfigure {
     public FilterRegistrationBean cacheFilterRegistration() {
 
         if (uiUrlPattern.equals(lowCodeUrlPattern)) {
-            //如果用户配置的url和服务url相同，会影响url解析，应限制用户配置的url不能合serverUrlPattern相同
-            throw new LowCodeException("用户配置的url不能为y3tu-tool-lowcode,请更换！");
+            //如果用户配置的url和服务url相同，会影响url解析，应限制用户配置的url不能和lowCodeUrlPattern相同
+            throw new LowCodeException("用户配置的url不能为tools-lowcode,请更换！");
         }
 
         FilterRegistrationBean registration = new FilterRegistrationBean();
         UiFilter uiFilter = new UiFilter();
-        uiFilter.setCacheUrlPattern(cacheUrlPattern);
         uiFilter.setUiUrlPattern(uiUrlPattern);
         uiFilter.setLowCodeUrlPattern(lowCodeUrlPattern);
         registration.setFilter(uiFilter);

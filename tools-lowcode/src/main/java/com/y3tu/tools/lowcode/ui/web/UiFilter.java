@@ -21,7 +21,6 @@ import java.io.IOException;
 @Data
 public class UiFilter implements Filter {
 
-    private String cacheUrlPattern;
     private String lowCodeUrlPattern;
     private String uiUrlPattern;
 
@@ -36,12 +35,10 @@ public class UiFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String requestUrl = httpRequest.getRequestURI();
 
-        if (requestUrl.indexOf(formatUrl(cacheUrlPattern)) > 0) {
-            requestUrl = StrUtil.replace(requestUrl, 0, formatSuffixUrl(uiUrlPattern), "", true);
-            httpRequest.getRequestDispatcher(requestUrl).forward(httpRequest, httpResponse);
-        } else if (requestUrl.indexOf(formatUrl(lowCodeUrlPattern)) > 0) {
+        if (requestUrl.indexOf(formatUrl(lowCodeUrlPattern)) > 0) {
+            //需要把用户自定义的url前缀映射到程序真正的url前缀
             int urlIndex = requestUrl.indexOf(formatSuffixUrl(uiUrlPattern));
-            requestUrl = requestUrl.substring(urlIndex, requestUrl.length());
+            requestUrl = requestUrl.substring(urlIndex);
             requestUrl = StrUtil.replace(requestUrl, 0, formatSuffixUrl(uiUrlPattern), "", true);
             httpRequest.getRequestDispatcher(requestUrl).forward(httpRequest, httpResponse);
         } else {

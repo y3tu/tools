@@ -30,7 +30,7 @@ import java.util.List;
  * @author y3tu
  */
 @RestController
-@RequestMapping("y3tu-tool-lowcode/reportDownload")
+@RequestMapping("tools-lowcode/reportDownload")
 public class ReportDownloadController {
     @Autowired
     ReportDownloadService reportDownloadService;

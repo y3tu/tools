@@ -19,7 +19,7 @@ import java.util.UUID;
  * @author y3tu
  */
 @RestController
-@RequestMapping("y3tu-tool-lowcode/ui")
+@RequestMapping("tools-lowcode/ui")
 @Slf4j
 public class UiController {
 

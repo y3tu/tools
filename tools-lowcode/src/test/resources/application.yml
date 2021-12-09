@@ -56,21 +56,16 @@ spring:
         max-wait: 10000
     timeout: 500000
 
-y3tu:
-  tool:
-    cache:
-      enableApi: true
-      cacheMode: all
-      stats: true
-    lowcode:
-      ui:
-        urlPattern: /tool/*
-      remote:
-        host: 127.0.0.1
-        port: 22
-        username: root
-        password: root
-        remoteMode: sftp
+tools:
+  lowcode:
+    ui:
+      urlPattern: /tool/*
+    remote:
+      host: 127.0.0.1
+      port: 22
+      username: root
+      password: root
+      remoteMode: sftp
 
 
 
