@@ -22,15 +22,15 @@
             // 初始化websocket
             if (process.env.NODE_ENV == 'development') {
                 let api = process.env.VUE_APP_MSG_SOCKET_API;
-                this.url = `${api}/y3tu-tool-lowcode/websocket/message/all`;
+                this.url = `${api}/tools-lowcode/websocket/message/all`;
                 this.initWebSocket(this.url);
             } else {
                 service({
-                    url: 'y3tu-tool-lowcode/ui/getContextPath',
+                    url: 'tools-lowcode/ui/getContextPath',
                     method: 'get',
                 }).then(res => {
                     let contextPath = res.data;
-                    this.url = `ws://${location.host + "/" + contextPath}/y3tu-tool-lowcode/websocket/message/all`;
+                    this.url = `ws://${location.host + "/" + contextPath}/tools-lowcode/websocket/message/all`;
                     this.initWebSocket(this.url);
                 })
             }

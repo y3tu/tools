@@ -11,7 +11,7 @@
         <el-card style="position: relative;top:50%">
           <template #header>
             <div class="card-header">
-              <span class="title">Y3tu Tool Low Code</span>
+              <span class="title">Tools Low Code</span>
             </div>
             <div class="card-header">
               <span class="title">低代码工具平台</span>
@@ -108,7 +108,7 @@ export default {
         this.loading = true;
         const that = this;
         service({
-          url: 'y3tu-tool-lowcode/ui/login',
+          url: 'tools-lowcode/ui/login',
           method: 'post',
           data: that.loginForm
         }).then((res) => {

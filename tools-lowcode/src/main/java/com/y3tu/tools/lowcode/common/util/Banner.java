@@ -44,7 +44,7 @@ public class Banner {
 
         printStream.println(AnsiOutput.toString(new Object[]{AnsiColor.BRIGHT_RED, defaultBanner, AnsiColor.DEFAULT, padding.toString(), AnsiStyle.FAINT}));
         printStream.println();
-        printStream.println(AnsiOutput.toString(new Object[]{AnsiColor.GREEN, " :: Y3tu-Tool-Low-Code :: ", AnsiColor.DEFAULT, padding.toString(), AnsiStyle.FAINT, version}));
+        printStream.println(AnsiOutput.toString(new Object[]{AnsiColor.GREEN, " :: Tools-Low-Code :: ", AnsiColor.DEFAULT, padding.toString(), AnsiStyle.FAINT, version}));
         printStream.println();
     }
 

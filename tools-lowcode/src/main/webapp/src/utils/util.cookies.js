@@ -13,7 +13,7 @@ cookies.set = function (name = 'default', value = '', cookieSetting = {}) {
         expires: 1
     }
     Object.assign(currentCookieSetting, cookieSetting)
-    Cookies.set(`y3tu-tool-${name}`, value, currentCookieSetting)
+    Cookies.set(`tools-lowcode-${name}`, value, currentCookieSetting)
 }
 
 /**
@@ -21,7 +21,7 @@ cookies.set = function (name = 'default', value = '', cookieSetting = {}) {
  * @param {String} name cookie name
  */
 cookies.get = function (name = 'default') {
-    return Cookies.get(`y3tu-tool-${name}`)
+    return Cookies.get(`tools-lowcode-${name}`)
 }
 
 /**
@@ -36,7 +36,7 @@ cookies.getAll = function () {
  * @param {String} name cookie name
  */
 cookies.remove = function (name = 'default') {
-    return Cookies.remove(`y3tu-tool-${name}`)
+    return Cookies.remove(`tools-lowcode-${name}`)
 }
 
 export default cookies

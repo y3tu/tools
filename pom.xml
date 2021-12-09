@@ -49,7 +49,7 @@
 
     <issueManagement>
         <system>Github Issue</system>
-        <url>https://github.com/y3tu/y3tu-tool/issues</url>
+        <url>https://github.com/y3tu/tools/issues</url>
     </issueManagement>
 
     <developers>
@@ -60,9 +60,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git@github.com:y3tu/y3tu-tool.git</connection>
-        <developerConnection>scm:git@github.com:y3tu/y3tu-tool.git</developerConnection>
-        <url>git@github.com:y3tu/y3tu-tool.git</url>
+        <connection>scm:git@github.com:y3tu/tools.git</connection>
+        <developerConnection>scm:git@github.com:y3tu/tools.git</developerConnection>
+        <url>git@github.com:y3tu/tools.git</url>
     </scm>
 
     <build>

@@ -5,7 +5,7 @@ import {service, download} from '@/plugin/axios'
  */
 export function page(params) {
     return service({
-        url: 'y3tu-tool-lowcode/reportDownload/page',
+        url: 'tools-lowcode/reportDownload/page',
         method: 'post',
         data: params
     })
@@ -13,13 +13,13 @@ export function page(params) {
 
 export function handleAgain(id) {
     return service({
-        url: `y3tu-tool-lowcode/reportDownload/handleAgain/${id}`,
+        url: `tools-lowcode/reportDownload/handleAgain/${id}`,
         method: 'get',
     })
 }
 
 export function downloadFile(id, fileName) {
-    download(`y3tu-tool-lowcode/reportDownload/download/${id}`, fileName);
+    download(`tools-lowcode/reportDownload/download/${id}`, fileName);
 }
 
 
