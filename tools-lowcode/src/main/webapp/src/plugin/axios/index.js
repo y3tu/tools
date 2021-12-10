@@ -55,18 +55,18 @@ service.interceptors.response.use(response => {
     if (error) {
         if (error.toString().indexOf('Error: timeout') !== -1) {
 
-            utilToast('网络请求超时', 'error', 5 * 1000)
+            utilToast.msg('网络请求超时', 'error', 5 * 1000)
             return Promise.reject(error)
         }
         if (error.toString().indexOf('Error: Network Error') !== -1) {
 
-            utilToast('网络请求错误', 'error', 5 * 1000)
+            utilToast.msg('网络请求错误', 'error', 5 * 1000)
             return Promise.reject(error)
         }
 
         if (error.toString().indexOf('503') !== -1) {
 
-            utilToast('服务暂时不可用，请稍后再试!', 'error', 5 * 1000)
+            utilToast.msg('服务暂时不可用，请稍后再试!', 'error', 5 * 1000)
             return Promise.reject(error)
         }
 
@@ -77,16 +77,16 @@ service.interceptors.response.use(response => {
         const errorMessage = error.response.data === null ? '系统内部异常，请联系网站管理员' : error.response.data.message;
         switch (error.response.status) {
             case 404:
-                utilToast('很抱歉，资源未找到!', 'error', 5 * 1000)
+                utilToast.msg('很抱歉，资源未找到!', 'error', 5 * 1000)
                 break;
             case 403:
-                utilToast('很抱歉，您暂无该操作权限!', 'error', 5 * 1000)
+                utilToast.msg('很抱歉，您暂无该操作权限!', 'error', 5 * 1000)
                 break;
             case 401:
-                utilToast('很抱歉，您没有权限!', 'error', 5 * 1000)
+                utilToast.msg('很抱歉，您没有权限!', 'error', 5 * 1000)
                 break;
             default:
-                utilToast(errorMessage, 'error', messageDuration)
+                utilToast.msg(errorMessage, 'error', messageDuration)
                 break
         }
     }

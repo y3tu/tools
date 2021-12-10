@@ -27,7 +27,7 @@ public enum ErrorEnum implements IError {
      */
     SYSTEM_BUSY_ERROR("SYSTEM-BUSY-ERROR", "系统繁忙,请稍候再试"),
     /**
-     * Tool工具异常
+     * Tools工具异常
      */
     TOOLS_ERROR("TOOLS-ERROR", "工具异常");
 
