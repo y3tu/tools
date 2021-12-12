@@ -1,11 +1,8 @@
 <template>
   <div>
-    <!--背景粒子效果-->
-    <particles-bg type="cobweb" num=30 :bg="true"/>
-
     <el-row type="flex" justify="center" :gutter="10">
       <el-col :span="12">
-        <animation :type="animationType" style="position: relative;top:33%"/>
+        <Lottie :options="lottieOption" :width="900" :height="550" style="position: relative;top:33%"/>
       </el-col>
       <el-col :span="6">
         <el-card style="position: relative;top:50%">
@@ -55,74 +52,98 @@
       </el-col>
     </el-row>
 
-
   </div>
 
 </template>
 
-<script>
-
-import animation from './animation'
-import service from '@/plugin/axios'
+<script lang="ts">
+import {defineComponent, defineAsyncComponent, ref, reactive, onBeforeMount} from "vue";
+import service from '@/plugins/axios'
 import util from "@/utils";
+import animationJson1 from './animation/animation1.json'
+import animationJson2 from './animation/animation2.json'
+import animationJson3 from './animation/animation3.json'
 
-export default {
-  name: 'login',
-  components: {animation},
-  data() {
-    return {
-      rules: {
-        username: {required: true, message: '用户名不能为空', trigger: 'blur'},
-        password: {required: true, message: '用户名不能为空', trigger: 'blur'}
+export default defineComponent({
+      name: 'login',
+      components: {
+        Lottie: defineAsyncComponent(() => import('@/components/Lottie/index.vue'))
       },
-      loginForm: {
-        username: '',
-        password: ''
-      },
-      loading: false,
-      animationType:1,
-    }
-  },
-  created() {
-    this.animationType = util.common.getRandomInt(1,7);
-  },
-  methods: {
-    /**
-     * 登录
-     */
-    handleLogin() {
-      let username_c = false;
-      let password_c = false;
-      this.$refs.loginForm.validateField('username', e => {
-        if (!e) {
-          username_c = true
-        }
-      });
-      this.$refs.loginForm.validateField('password', e => {
-        if (!e) {
-          password_c = true
-        }
-      });
-
-      if (username_c && password_c) {
-        this.loading = true;
-        const that = this;
-        service({
-          url: 'tools-lowcode/ui/login',
-          method: 'post',
-          data: that.loginForm
-        }).then((res) => {
-          util.cookies.set('ACCESS_TOKEN', res.data, {expires: 1});
-          this.$router.push({path: '/'})
-        }).catch((error) => {
-          console.error(error);
-          that.loading = false;
-
+      setup() {
+        const rules = reactive({
+          username: {required: true, message: '用户名不能为空', trigger: 'blur'},
+          password: {required: true, message: '密码不能为空', trigger: 'blur'}
         })
-      }
+
+        const loginForm = ref({
+          username: '',
+          password: ''
+        })
+
+        const loading = ref(false);
+        const lottieOption = reactive({
+          animationData: animationJson1
+        })
+
+        onBeforeMount(() => {
+          let num = util.common.getRandomInt(1, 3);
+          switch (num) {
+            case 1:
+              lottieOption.animationData = animationJson1
+              break
+            case 2:
+              lottieOption.animationData = animationJson2
+              break;
+            case 3:
+              lottieOption.animationData = animationJson3
+              break
+            default :
+              lottieOption.animationData = animationJson1
+              break
+          }
+        })
+
+
+        const handleLogin = () => {
+          let username_c = false;
+          let password_c = false;
+          this.$refs.loginForm.validateField('username', e => {
+            if (!e) {
+              username_c = true
+            }
+          });
+          this.$refs.loginForm.validateField('password', e => {
+            if (!e) {
+              password_c = true
+            }
+          });
+
+          if (username_c && password_c) {
+            this.loading = true;
+            service({
+              url: 'tools-lowcode/ui/login',
+              method: 'post',
+              data: loginForm
+            }).then((res) => {
+              util.db.set('ACCESS_TOKEN', res.data, {expires: 1});
+              this.$router.push({path: '/'})
+            }).catch((error) => {
+              console.error(error);
+              loading.value = false;
+            })
+          }
+        }
+
+        return {
+          rules,
+          loginForm,
+          loading,
+          lottieOption,
+          handleLogin
+        }
+      },
     }
-  }
-}
+)
 
 </script>
 

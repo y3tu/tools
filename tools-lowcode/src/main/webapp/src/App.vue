@@ -1,11 +1,13 @@
 <template>
-    <div id="app">
-        <router-view></router-view>
-    </div>
+  <router-view #="{ Component, route }">
+    <component :is="Component" :key="route.path" />
+  </router-view>
 </template>
 
-<script>
-    export default {
-        name: 'App'
-    }
+<script setup lang="ts">
+
 </script>
+
+<style lang="scss">
+@import 'style/common';
+</style>
