@@ -315,6 +315,11 @@ constantinople@^4.0.1:
     "@babel/parser" "^7.6.0"
     "@babel/types" "^7.6.1"
 
+core-js@^3.16.1:
+  version "3.19.3"
+  resolved "https://registry.npmmirror.com/core-js/download/core-js-3.19.3.tgz#6df8142a996337503019ff3235a7022d7cdf4559"
+  integrity sha512-LeLBMgEGSsG7giquSzvgBrTS7V5UL6ks3eQlUSbN8dJStlLFiRzUm5iqsRyzUB8carhfKjkJ2vzKqE6z1Vga9g==
+
 csstype@^2.6.8:
   version "2.6.19"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.19.tgz#feeb5aae89020bb389e1f63669a5ed490e391caa"
@@ -716,6 +721,15 @@ object-assign@^4.1.1:
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
   integrity sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=
 
+particles.vue3@^1.20.5:
+  version "1.20.5"
+  resolved "https://registry.npmmirror.com/particles.vue3/download/particles.vue3-1.20.5.tgz#5cca0dc1250fb249eb31fc9b291004592135998d"
+  integrity sha512-nH3XKBhoBGbCv2HbDrezmah4i4WPYQ+MCgfwvouPAspEl8WfdScSmNE4Bqk9VOuYMc1kUCNMe1fShUSNTNJwBw==
+  dependencies:
+    core-js "^3.16.1"
+    tsparticles "^1.37.5"
+    vue-class-component "^8.0.0-rc.1"
+
 path-parse@^1.0.6:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.7.tgz#fbc114b60ca42b30d9daf5858e4bd68bbedb6735"
@@ -932,6 +946,11 @@ token-stream@1.0.0:
   resolved "https://registry.yarnpkg.com/token-stream/-/token-stream-1.0.0.tgz#cc200eab2613f4166d27ff9afc7ca56d49df6eb4"
   integrity sha1-zCAOqyYT9BZtJ/+a/HylbUnfbrQ=
 
+tsparticles@^1.37.5:
+  version "1.37.5"
+  resolved "https://registry.npmmirror.com/tsparticles/download/tsparticles-1.37.5.tgz#df87356e8ba092ed066ef80c367b0a0f6d3b81e8"
+  integrity sha512-BQBRnnKKhKH2POwxuHzPiuL/zPUjuR5QmMCFQ2vm3fadE2k4vqmH099m1R9R+nt0lTvWL6SCS0hYQQkqUjsMXg==
+
 typescript@^4.4.4:
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.5.3.tgz#afaa858e68c7103317d89eb90c5d8906268d353c"
@@ -1087,6 +1106,11 @@ vscode-vue-languageservice@0.28.10:
     vscode-languageserver-textdocument "^1.0.1"
     vscode-pug-languageservice "0.28.10"
     vscode-typescript-languageservice "0.28.10"
+
+vue-class-component@^8.0.0-rc.1:
+  version "8.0.0-rc.1"
+  resolved "https://registry.nlark.com/vue-class-component/download/vue-class-component-8.0.0-rc.1.tgz#db692cd97656eb9a08206c03d0b7398cdb1d9420"
+  integrity sha1-22ks2XZW65oIIGwD0Lc5jNsdlCA=
 
 vue-demi@*:
   version "0.12.1"

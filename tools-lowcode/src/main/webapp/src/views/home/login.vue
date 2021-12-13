@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Particles id="particles" :options="particlesConfig" />
     <el-row type="flex" justify="center" :gutter="10">
       <el-col :span="12">
         <Lottie :options="lottieOption" :width="900" :height="550" style="position: relative;top:33%"/>
@@ -14,14 +15,13 @@
               <span class="title">低代码工具平台</span>
             </div>
           </template>
-          <el-form ref="loginForm"
+          <el-form ref="loginFormRef"
                    :model="loginForm"
                    :rules="rules"
                    autocomplete="off"
                    label-position="left">
             <el-form-item prop="username">
               <el-input
-                  ref="username"
                   v-model="loginForm.username"
                   placeholder="用户名"
                   prefix-icon="el-icon-user"
@@ -32,7 +32,6 @@
             </el-form-item>
             <el-form-item prop="password">
               <el-input
-                  ref="password"
                   v-model="loginForm.password"
                   prefix-icon="el-icon-key"
                   type="password"
@@ -57,7 +56,9 @@
 </template>
 
 <script lang="ts">
+import {particlesConfig} from './particles-config'
 import {defineComponent, defineAsyncComponent, ref, reactive, onBeforeMount} from "vue";
+import {useRouter} from 'vue-router';
 import service from '@/plugins/axios'
 import util from "@/utils";
 import animationJson1 from './animation/animation1.json'
@@ -70,12 +71,14 @@ export default defineComponent({
         Lottie: defineAsyncComponent(() => import('@/components/Lottie/index.vue'))
       },
       setup() {
-        const rules = reactive({
+        //登录校验规则
+        const rules = {
           username: {required: true, message: '用户名不能为空', trigger: 'blur'},
           password: {required: true, message: '密码不能为空', trigger: 'blur'}
-        })
+        }
 
-        const loginForm = ref({
+        const loginFormRef = ref({});
+        const loginForm = reactive({
           username: '',
           password: ''
         })
@@ -87,46 +90,34 @@ export default defineComponent({
 
         onBeforeMount(() => {
           let num = util.common.getRandomInt(1, 3);
-          switch (num) {
-            case 1:
-              lottieOption.animationData = animationJson1
-              break
-            case 2:
-              lottieOption.animationData = animationJson2
-              break;
-            case 3:
-              lottieOption.animationData = animationJson3
-              break
-            default :
-              lottieOption.animationData = animationJson1
-              break
+          if (num == 1) {
+            lottieOption.animationData = animationJson1
+          } else if (num == 2) {
+            lottieOption.animationData = animationJson2
+          } else {
+            lottieOption.animationData = animationJson3
           }
         })
 
-
+        const router = useRouter();
         const handleLogin = () => {
           let username_c = false;
           let password_c = false;
-          this.$refs.loginForm.validateField('username', e => {
-            if (!e) {
-              username_c = true
-            }
-          });
-          this.$refs.loginForm.validateField('password', e => {
-            if (!e) {
+          loginFormRef.value.validate(valid => {
+            if (valid) {
+              username_c = true;
               password_c = true
             }
-          });
-
+          })
           if (username_c && password_c) {
-            this.loading = true;
+            loading.value = true;
             service({
               url: 'tools-lowcode/ui/login',
               method: 'post',
               data: loginForm
             }).then((res) => {
-              util.db.set('ACCESS_TOKEN', res.data, {expires: 1});
-              this.$router.push({path: '/'})
+              util.db.save('ACCESS_TOKEN', res.data);
+              router.push({path: '/'})
             }).catch((error) => {
               console.error(error);
               loading.value = false;
@@ -137,9 +128,11 @@ export default defineComponent({
         return {
           rules,
           loginForm,
+          loginFormRef,
           loading,
           lottieOption,
-          handleLogin
+          handleLogin,
+          particlesConfig
         }
       },
     }
