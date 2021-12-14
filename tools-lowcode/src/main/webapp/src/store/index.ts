@@ -1,27 +1,19 @@
 import { createStore } from 'vuex'
 
-const defaultState = {
-    count: 0
-}
+import settings from './modules/settings'
+import tagsView from './modules/tagsView'
+import app from './modules/app'
 
-// Create a new store instance.
-export default createStore({
-    state() {
-        return defaultState
+import getters from './getters'
+
+
+const store = createStore({
+    modules: {
+        settings,
+        app,
+        tagsView
     },
-    mutations: {
-        increment(state: typeof defaultState) {
-            state.count++
-        }
-    },
-    actions: {
-        increment(context) {
-            context.commit('increment')
-        }
-    },
-    getters: {
-        double(state: typeof defaultState) {
-            return 2 * state.count
-        }
-    }
+    getters
 })
+
+export default store

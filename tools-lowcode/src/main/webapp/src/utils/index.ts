@@ -1,11 +1,13 @@
-import common from "./common";
+import common from './common';
 import toast from "./toast";
 import db from './db'
+import cookies from './cookies';
 
 const util = {
     toast,
     db,
-    common
+    common,
+    cookies
 };
 
 export default util

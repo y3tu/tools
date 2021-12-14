@@ -1,9 +1,9 @@
 <template>
   <div>
-    <Particles id="particles" :options="particlesConfig" />
+    <Particles id="particles" :options="particlesConfig"/>
     <el-row type="flex" justify="center" :gutter="10">
       <el-col :span="12">
-        <Lottie :options="lottieOption" :width="900" :height="550" style="position: relative;top:33%"/>
+        <Lottie :options="lottieOption" :width="lottieWidth" :height="lottieHeight" style="position: relative;top:33%"/>
       </el-col>
       <el-col :span="6">
         <el-card style="position: relative;top:50%">
@@ -57,8 +57,9 @@
 
 <script lang="ts">
 import {particlesConfig} from './particles-config'
-import {defineComponent, defineAsyncComponent, ref, reactive, onBeforeMount} from "vue";
+import {defineComponent, defineAsyncComponent, ref, reactive, onBeforeMount, onMounted} from "vue";
 import {useRouter} from 'vue-router';
+import {useWindowSize} from '@vueuse/core'
 import service from '@/plugins/axios'
 import util from "@/utils";
 import animationJson1 from './animation/animation1.json'
@@ -71,6 +72,8 @@ export default defineComponent({
         Lottie: defineAsyncComponent(() => import('@/components/Lottie/index.vue'))
       },
       setup() {
+
+
         //登录校验规则
         const rules = {
           username: {required: true, message: '用户名不能为空', trigger: 'blur'},
@@ -99,6 +102,14 @@ export default defineComponent({
           }
         })
 
+        let lottieWidth = ref(0)
+        let lottieHeight = ref(0)
+        onMounted(() => {
+          const {width, height} = useWindowSize();
+          lottieWidth.value = width.value * 2 / 5;
+          lottieHeight.value = height.value * 2 / 3;
+        })
+
         const router = useRouter();
         const handleLogin = () => {
           let username_c = false;
@@ -116,7 +127,7 @@ export default defineComponent({
               method: 'post',
               data: loginForm
             }).then((res) => {
-              util.db.save('ACCESS_TOKEN', res.data);
+              util.cookies.set('ACCESS_TOKEN', res.data, {expires: 1});
               router.push({path: '/'})
             }).catch((error) => {
               console.error(error);
@@ -131,6 +142,8 @@ export default defineComponent({
           loginFormRef,
           loading,
           lottieOption,
+          lottieWidth,
+          lottieHeight,
           handleLogin,
           particlesConfig
         }
