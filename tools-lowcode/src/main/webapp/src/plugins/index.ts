@@ -7,7 +7,7 @@ import ElementPlus from 'element-plus'
 //背景粒子效果
 import Particles from 'particles.vue3'
 
-import modal from './modal'
+import modal from '../utils/modal'
 
 
 export default function installPlugins(app: App) {

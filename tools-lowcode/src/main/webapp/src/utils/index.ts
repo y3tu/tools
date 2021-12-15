@@ -1,13 +1,15 @@
 import common from './common';
-import toast from "./toast";
 import db from './db'
 import cookies from './cookies';
+import modal from './modal'
+import request from './request'
 
 const util = {
-    toast,
     db,
     common,
-    cookies
+    cookies,
+    modal,
+    request
 };
 
 export default util

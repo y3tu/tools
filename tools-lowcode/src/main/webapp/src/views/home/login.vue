@@ -60,7 +60,6 @@ import {particlesConfig} from './particles-config'
 import {defineComponent, defineAsyncComponent, ref, reactive, onBeforeMount, onMounted} from "vue";
 import {useRouter} from 'vue-router';
 import {useWindowSize} from '@vueuse/core'
-import service from '@/plugins/axios'
 import util from "@/utils";
 import animationJson1 from './animation/animation1.json'
 import animationJson2 from './animation/animation2.json'
@@ -122,7 +121,7 @@ export default defineComponent({
           })
           if (username_c && password_c) {
             loading.value = true;
-            service({
+            util.request({
               url: 'tools-lowcode/ui/login',
               method: 'post',
               data: loginForm

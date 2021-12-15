@@ -1,5 +1,5 @@
 // @ts-ignore
-import {Cookies, CookieAttributes} from 'js-cookie'
+import Cookies from 'js-cookie'
 
 const cookies = {
     /**
@@ -8,7 +8,7 @@ const cookies = {
      * @param value 值
      * @param cookieSetting cookies设置
      */
-    set(key: string = 'default', value: any, cookieSetting?: CookieAttributes): void {
+    set(key: string = 'default', value: any, cookieSetting?: Cookies.CookieAttributes): void {
         let currentCookieSetting = {
             expires: 1
         }
@@ -21,7 +21,7 @@ const cookies = {
      * @param key 键
      */
     get(key: string = 'default'): any {
-        return Cookies.get(`tools-low-code--${key}`)
+        return Cookies.get(`tools-low-code-${key}`)
     },
 
     /**
@@ -36,7 +36,7 @@ const cookies = {
      * @param key 键
      */
     remove(key: string = 'default'): void {
-        return Cookies.remove(`tools-low-code--${key}`)
+        return Cookies.remove(`tools-low-code-${key}`)
     }
 }
 

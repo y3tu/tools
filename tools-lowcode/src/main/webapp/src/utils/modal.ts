@@ -2,8 +2,8 @@ import {ElMessage, ElMessageBox, ElNotification, ElLoading, ILoadingInstance} fr
 
 let loadingInstance: ILoadingInstance;
 
-export default {
-    //消息提示
+let modal = {
+//消息提示
     msg(content: string): void {
         ElMessage.info(content)
     },
@@ -80,3 +80,5 @@ export default {
         loadingInstance.close();
     }
 }
+
+export default modal
