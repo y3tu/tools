@@ -57,7 +57,7 @@
 
 <script lang="ts">
 import {particlesConfig} from './particles-config'
-import {defineComponent, defineAsyncComponent, ref, reactive, onBeforeMount, onMounted} from "vue";
+import {defineComponent, defineAsyncComponent, ref, reactive, onBeforeMount} from "vue";
 import {useRouter} from 'vue-router';
 import {useWindowSize} from '@vueuse/core'
 import util from "@/utils";
@@ -71,8 +71,6 @@ export default defineComponent({
         Lottie: defineAsyncComponent(() => import('@/components/Lottie/index.vue'))
       },
       setup() {
-
-
         //登录校验规则
         const rules = {
           username: {required: true, message: '用户名不能为空', trigger: 'blur'},
@@ -90,6 +88,9 @@ export default defineComponent({
           animationData: animationJson1
         })
 
+        let lottieWidth = ref(0)
+        let lottieHeight = ref(0)
+
         onBeforeMount(() => {
           let num = util.common.getRandomInt(1, 3);
           if (num == 1) {
@@ -99,14 +100,11 @@ export default defineComponent({
           } else {
             lottieOption.animationData = animationJson3
           }
-        })
 
-        let lottieWidth = ref(0)
-        let lottieHeight = ref(0)
-        onMounted(() => {
           const {width, height} = useWindowSize();
           lottieWidth.value = width.value * 2 / 5;
           lottieHeight.value = height.value * 2 / 3;
+
         })
 
         const router = useRouter();
