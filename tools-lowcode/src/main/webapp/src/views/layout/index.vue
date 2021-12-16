@@ -6,15 +6,13 @@
     </el-header>
     <el-main style="margin-top: 40px;">
       <div v-bind:style="{minHeight: Height+'px'}">
-        <router-view v-slot="{ Component }" v-if="$route.meta.keepAlive">
+        <router-view v-slot="{ Component }" v-if="router.meta.keepAlive">
           <keep-alive>
             <component :is="Component"/>
           </keep-alive>
         </router-view>
-        <router-view v-slot="{ Component }" v-if="!$route.meta.keepAlive">
-          <keep-alive>
-            <component :is="Component"/>
-          </keep-alive>
+        <router-view v-slot="{ Component }" v-if="!router.meta.keepAlive">
+          <component :is="Component"/>
         </router-view>
       </div>
     </el-main>
@@ -25,17 +23,23 @@
 <script>
 
 import Headroom from 'headroom.js'
-
-import {defineComponent, defineAsyncComponent, ref, reactive, onBeforeMount, onMounted} from "vue";
+import {useWindowSize} from '@vueuse/core'
+import {defineComponent, defineAsyncComponent, ref, onMounted} from "vue";
+import {useRouter} from 'vue-router'
 
 export default defineComponent({
       name: 'Home',
       components: {
         Developing: defineAsyncComponent(() => import('@/components/Developing/index.vue')),
-        Header:defineAsyncComponent(() => import('@/views/layout/header.vue'))
+        Header: defineAsyncComponent(() => import('@/views/layout/header.vue'))
       },
-      created() {
-        this.$nextTick(() => {
+      setup() {
+
+        const router = useRouter().currentRoute.value;
+
+        const Height = ref(0);
+
+        onMounted(() => {
           let headerElement = document.querySelector('#header');
           let headroom = new Headroom(headerElement, {
             // 在元素没有固定之前，垂直方向的偏移量（以px为单位）
@@ -55,20 +59,17 @@ export default defineComponent({
 
           headroom.init();
 
-          //动态设置内容高度 让footer始终居底   header+footer的高度是100
-          this.Height = document.documentElement.clientHeight - 100;
-          //监听浏览器窗口变化
-          window.onresize = () => {
-            this.Height = document.documentElement.clientHeight - 100
-          }
+          //动态设置内容高度
+          const {height} = useWindowSize();
+          Height.value = height.value - 100;
         })
-      },
-      data() {
-        return {
-          Height: 0
-        }
-      },
 
+
+        return {
+          Height,
+          router
+        }
+      }
     }
 )
 </script>

@@ -12,6 +12,7 @@
     "vuex": "^4.0.2",
     "@vueuse/core": "^7.3.0",
     "element-plus": "^1.2.0-beta.5",
+    "@element-plus/icons-vue": "^0.2.4",
     "axios": "^0.24.0",
     "js-cookie": "^3.0.1",
     "nprogress": "^1.0.0-1",

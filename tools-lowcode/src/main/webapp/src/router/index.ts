@@ -16,11 +16,11 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
         name: '首页',
-        redirect: '/home',
+        redirect: '/',
         component: () => import('@/views/layout/index.vue'),
         children: [
             {
-                path: '/home',
+                path: '/',
                 name: 'home',
                 component: () => import('@/views/home/index.vue'),
                 meta: {
@@ -29,10 +29,31 @@ const routes: Array<RouteRecordRaw> = [
             }
         ]
     },
+    {
+        path: '/ds',
+        name: '数据源',
+        redirect: '/ds',
+        component: () => import('@/views/layout/index.vue'),
+        children: [
+            {
+                path: '/ds',
+                name: '数据源',
+                component: () => import('@/views/dataSource/index.vue'),
+                meta: {
+                    keepAlive: true,
+                }
+            }
+        ]
+    },
+    {
+        path: '/design',
+        name: '设计器',
+        component: () => import('@/views/design/index.vue'),
+    },
 ]
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHashHistory(import.meta.env.VITE_APP_BASE_API+''),
     routes
 })
 

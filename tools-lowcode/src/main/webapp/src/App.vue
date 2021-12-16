@@ -1,7 +1,7 @@
 <template>
-  <router-view #="{ Component, route }">
-    <component :is="Component" :key="route.path" />
-  </router-view>
+  <div id="app">
+    <router-view></router-view>
+  </div>
 </template>
 
 <script setup lang="ts">

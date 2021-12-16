@@ -7,17 +7,18 @@
 
     <div class="menu-center">
       <el-menu
-          default-active="/report/list"
+          :default-active="activeIndex"
           mode="horizontal"
           background-color="#292f36"
           text-color="#fff"
           :router="true"
+          @select="handleSelect"
           active-text-color="#ffd04b">
         <template v-for="item in menuList" v-bind:key="item.title">
           <el-menu-item v-if="!item.sub" :index="item.route" v-bind:key="item.route">
             {{ item.title }}
           </el-menu-item>
-          <el-sub-menu v-if="item.sub" :index="item.title">
+          <el-sub-menu v-if="item.sub" :index="item.route">
             <template #title>{{ item.title }}</template>
             <el-menu-item v-for="sub in item.sub" :index="sub.route" v-bind:key="sub.route">
               {{ sub.title }}
@@ -49,56 +50,55 @@
 
 import logo from '../../assets/logo.png'
 import util from "@/utils";
-import {defineComponent} from 'vue'
+import {defineComponent, ref, onBeforeMount, onMounted} from 'vue'
+import {useRouter} from 'vue-router'
 
 export default defineComponent({
-      data() {
-        return {
-          menuList: [
-            {
-              route: '/',
-              title: '首页'
-            },
-            {
-              title: '报表',
-              sub: [
-                {
-                  route: '/report/home',
-                  title: '总览',
-                },
-                {
-                  route: '/report/dict',
-                  title: '字典'
-                },
-                {
-                  route: '/report/dataSource',
-                  title: '数据源'
-                },
-                {
-                  route: '/report/reportDownload',
-                  title: '报表下载'
-                },
-              ]
-            },
-            {
-              route: '/visual',
-              title: '可视化'
-            },
-            {
-              route: '/cache',
-              title: '缓存'
-            },
+      setup() {
+        const menuList = ref([
+          {
+            route: '/',
+            title: '首页'
+          },
+          {
+            route: '/ds',
+            title: '数据源'
+          },
+          {
+            route: '/design',
+            title: '设计器'
+          },
+        ])
 
-          ],
-          logo,
-          searchContent: ''
+        //当前菜单页index
+        const activeIndex = ref('/')
+
+        //当点击菜单是触发处理，把当前页信息存入localStorage中
+        const handleSelect = (index) => {
+          activeIndex.value = index
         }
-      },
-      methods: {
-        logout() {
+
+        onBeforeMount(() => {
+          const router = useRouter().currentRoute.value;
+          activeIndex.value = router.path
+        })
+
+        /**
+         * 退出登录
+         */
+        const logout = function () {
           util.cookies.remove('ACCESS_TOKEN');
           location.reload();
         }
+
+        return {
+          activeIndex,
+          handleSelect,
+          menuList,
+          logo,
+          logout
+        }
+
       }
     }
 )
@@ -112,12 +112,13 @@ export default defineComponent({
     width: 50px;
     height: 80px;
     margin-top: 9px;
+
     img {
       max-width: 100%;
     }
   }
 
-  .menu-center{
+  .menu-center {
     margin-left: 50px;
   }
 

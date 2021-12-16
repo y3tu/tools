@@ -7,7 +7,7 @@ const requestTimeOut = 30 * 1000;
 const success = 200;
 
 export const service = axios.create({
-    baseURL: import.meta.env.VITE_APP_BASE_API,
+    baseURL: import.meta.env.VITE_APP_BASE_API+'',
     timeout: requestTimeOut,
     // 跨域请求，允许保存cookie
     withCredentials: true,
