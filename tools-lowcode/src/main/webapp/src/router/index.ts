@@ -46,10 +46,45 @@ const routes: Array<RouteRecordRaw> = [
         ]
     },
     {
+        path: '/codeGen',
+        name: '代码生成',
+        redirect: '/codeGen',
+        component: () => import('@/views/layout/index.vue'),
+        children: [
+            {
+                path: '/codeGen',
+                name: '代码生成',
+                component: () => import('@/views/codeGen/index.vue'),
+                meta: {
+                    keepAlive: true,
+                }
+            }
+        ]
+    },
+    {
         path: '/design',
         name: '设计器',
-        component: () => import('@/views/design/index.vue'),
-    },
+        redirect: '/design',
+        component: () => import('@/views/layout/index.vue'),
+        children: [
+            {
+                path: '/design',
+                name: '设计器',
+                component: () => import('@/views/design/index.vue'),
+                meta: {
+                    keepAlive: true,
+                }
+            },
+            {
+                path: '/designEditor',
+                name: '编辑器',
+                component: () => import('@/views/design/home.vue'),
+                meta: {
+                    keepAlive: true,
+                }
+            }
+        ]
+    }
 ]
 
 const router = createRouter({

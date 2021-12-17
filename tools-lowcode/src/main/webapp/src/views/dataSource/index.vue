@@ -8,7 +8,7 @@
       <el-button class="form-item" size="mini" type="success" :icon="Search" plain @click="queryHandle">
         查询
       </el-button>
-      <el-button class="form-item" size="mini" type="warning" :icon="Refresh" plain @click="reset">
+      <el-button class="form-item" size="mini" type="warning" :icon="Refresh" plain @click="resetHandle">
         重置
       </el-button>
       <el-button class="form-item" size="mini" type="primary" :icon="Plus" circle @click="addHandle"/>
@@ -53,7 +53,7 @@
           <span>{{ scope.row.remarks }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" align="center" min-width="110px">
+      <el-table-column label="创建时间" align="center" min-width="120px">
         <template #default="scope">
           <span>{{ scope.row.createTime }}</span>
         </template>
@@ -65,9 +65,15 @@
       </el-table-column>
       <el-table-column label="操作" align="center" min-width="150px" class-name="small-padding fixed-width">
         <template #default="scope">
-          <i class="el-icon-connection table-operation" style="color: #87d068;" @click="testHandle(scope.row)"/>
-          <i class="el-icon-setting table-operation" style="color: #2db7f5;" @click="editHandle(scope.row)"/>
-          <i class="el-icon-delete table-operation" style="color: #f50;" @click="delHandle(scope.row)"/>
+          <el-icon class="table-operation" style="color: #87d068;" >
+            <connection @click="testHandle(scope.row)"/>
+          </el-icon>
+          <el-icon class="table-operation" style="color: #2db7f5;" >
+            <edit @click="editHandle(scope.row)"/>
+          </el-icon>
+          <el-icon class="table-operation" style="color: #f50;" >
+            <delete @click="delHandle(scope.row)"/>
+          </el-icon>
         </template>
       </el-table-column>
     </el-table>
@@ -77,7 +83,6 @@
         style="margin-top: 20px;"
         background layout="prev, pager, next"
         :total="pageInfo.total"
-        @size-change="sizeChange"
         @current-change="pageChange"
         :page-size="pageInfo.pageSize"
         :current-page="pageInfo.current">
@@ -95,7 +100,7 @@
 
 <script setup>
 import {defineAsyncComponent, reactive, ref} from "vue";
-import {Search, Refresh, Plus} from '@element-plus/icons-vue'
+import {Search, Refresh, Plus,Connection,Edit,Delete} from '@element-plus/icons-vue'
 import util from "../../utils";
 import {query, testConnect, del} from './api'
 
@@ -119,15 +124,19 @@ const queryHandle = function () {
   showEditor.value = false;
   pageInfo.pageLoading = true
   query(pageInfo).then(res => {
+    debugger
     pageInfo.pageLoading = false
-    pageInfo = res.data;
+
+    pageInfo.records = res.data.records;
+    pageInfo.total = res.data.size;
+
   }).catch(() => {
     pageInfo.pageLoading = false
   })
 }
 
 //重置查询参数
-const reset = function () {
+const resetHandle = function () {
 
 }
 
@@ -160,13 +169,6 @@ const delHandle = function (row) {
       query()
     })
   })
-}
-
-//分页大小改变
-const sizeChange = function (e) {
-  pageInfo.current = 1;
-  pageInfo.size = e;
-  query()
 }
 
 //页数改变

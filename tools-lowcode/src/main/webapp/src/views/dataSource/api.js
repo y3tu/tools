@@ -5,7 +5,7 @@ import util from '@/utils'
  */
 export function query(params) {
     return util.request({
-        url: 'y3tu-tool-lowcode/dataSource/page',
+        url: 'tools-lowcode/dataSource/page',
         method: 'post',
         data: params
     })
@@ -16,7 +16,7 @@ export function query(params) {
  */
 export function add(params) {
     return util.request({
-        url: 'y3tu-tool-lowcode/dataSource/create',
+        url: 'tools-lowcode/dataSource/create',
         method: 'post',
         data: params
     })

@@ -44,11 +44,11 @@
 </template>
 
 <script setup>
-import {reactive, ref, defineEmits} from "vue";
+import {reactive, ref} from "vue";
 import {Check, Refresh} from '@element-plus/icons-vue'
 
 import util from '@/utils'
-import {create, update} from "./api";
+import {add, update} from "./api";
 
 
 const data = reactive({

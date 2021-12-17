@@ -65,6 +65,10 @@ export default defineComponent({
             title: '数据源'
           },
           {
+            route: '/codeGen',
+            title: '代码生成'
+          },
+          {
             route: '/design',
             title: '设计器'
           },
