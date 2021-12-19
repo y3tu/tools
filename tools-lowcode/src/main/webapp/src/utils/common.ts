@@ -47,6 +47,12 @@ const common = {
         }
         return target
     },
+    //交换数组里面的两项元素
+    swap<T extends any[]>(array: T, index1: number, index2: number): void {
+        const tmp = array[index1];
+        array[index1] = array[index2];
+        array[index2] = tmp;
+    },
     /**
      * 生成uuid方法
      * @returns {string}

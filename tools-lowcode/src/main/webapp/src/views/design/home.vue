@@ -39,17 +39,15 @@
 
 <script setup>
 import {defineAsyncComponent, ref} from "vue";
-import {mapState, useStore} from 'vuex'
-
-const store = useStore()
 const Editor = defineAsyncComponent(() => import('./components/editor/index.vue'))
 const Toolbar = defineAsyncComponent(() => import('./components/toolbar.vue'))
 const ComponentsList = defineAsyncComponent(() => import('./components/componentsList.vue'))
 import util from '@/utils'
-
+import {useDesignData} from './hooks/useDesignData'
 import componentList from './custom-components/list'
 
 
+const {addComponent,componentData} = useDesignData();
 const activeName = ref('')
 
 const handleDrop = function (e) {
@@ -63,9 +61,9 @@ const handleDrop = function (e) {
     component.style.top = e.clientY - rectInfo.y
     component.style.left = e.clientX - rectInfo.x
     component.id = util.common.createUUID();
+    addComponent(component)
+    console.log(componentData)
 
-    store.commit('design/addComponent', {component})
-    store.commit('design/recordSnapshot')
   }
 
 }
