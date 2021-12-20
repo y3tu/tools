@@ -62,28 +62,28 @@ const routes: Array<RouteRecordRaw> = [
         ]
     },
     {
-        path: '/design',
+        path: '/visual',
         name: '设计器',
-        redirect: '/design',
+        redirect: '/visual',
         component: () => import('@/views/layout/index.vue'),
         children: [
             {
-                path: '/design',
-                name: '设计器',
-                component: () => import('@/views/design/index.vue'),
-                meta: {
-                    keepAlive: true,
-                }
-            },
-            {
-                path: '/designEditor',
-                name: '编辑器',
-                component: () => import('@/views/design/home.vue'),
+                path: '/visual',
+                name: '页面',
+                component: () => import('@/views/visual/index.vue'),
                 meta: {
                     keepAlive: true,
                 }
             }
         ]
+    },
+    {
+        path: '/visualEditor',
+        name: '编辑器',
+        component: () => import('@/views/visual/home.vue'),
+        meta: {
+            keepAlive: true,
+        }
     }
 ]
 

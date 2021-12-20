@@ -124,7 +124,7 @@ const resetHandle = function () {
 }
 const router = useRouter();
 const addHandle = function () {
-  router.push({path: '/designEditor'})
+  router.push({path: '/visualEditor'})
 }
 
 const pageChange = function (e) {

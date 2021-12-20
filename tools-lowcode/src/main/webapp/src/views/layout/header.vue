@@ -69,8 +69,8 @@ export default defineComponent({
             title: '代码生成'
           },
           {
-            route: '/design',
-            title: '设计器'
+            route: '/visual',
+            title: '可视化设计'
           },
         ])
 
