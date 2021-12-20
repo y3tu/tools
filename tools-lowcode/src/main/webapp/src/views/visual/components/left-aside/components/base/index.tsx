@@ -1,11 +1,14 @@
-import { defineComponent, ref } from 'vue'
+import {defineComponent, ref} from 'vue'
+import {Edit} from "@element-plus/icons-vue";
 
 export default defineComponent({
-    name: 'BaseWidgets',
+    name: 'base',
     label: '基本组件',
     order: 3,
-    icon: 'el-icon-edit',
-    setup(){
-
+    icon: Edit,
+    setup() {
+        return () => {
+            <div>222</div>
+        }
     }
 })

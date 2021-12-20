@@ -2,14 +2,14 @@
   <el-container>
     <el-header height="60px">
       <!-- 顶部start -->
-      <Header />
+      <Header/>
       <!-- 顶部end -->
     </el-header>
 
     <el-container class="layout-container">
       <el-aside>
         <!-- 左侧组件start -->
-
+        <LeftAside/>
         <!-- 左侧组件end -->
       </el-aside>
 
@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import Header from './components/header/index.vue'
-
+import LeftAside from './components/left-aside/index.vue'
 </script>
 
 <style lang="scss">
