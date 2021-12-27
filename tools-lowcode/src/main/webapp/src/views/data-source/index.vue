@@ -104,7 +104,7 @@ import {Search, Refresh, Plus,Connection,Edit,Delete} from '@element-plus/icons-
 import util from "../../utils";
 import {query, testConnect, del} from './api'
 
-const Editor = defineAsyncComponent(() => import('@/views/dataSource/editor.vue'))
+const Editor = defineAsyncComponent(() => import('./editor.vue'))
 
 let pageInfo = reactive({
   entity: {

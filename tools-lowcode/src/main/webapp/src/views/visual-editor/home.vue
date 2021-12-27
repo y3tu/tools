@@ -31,7 +31,7 @@
               </div>
 
               <div v-for="(item,index) in pageInfo.records"
-                   :key="index"
+                   :key="home1"
                    class="page-view-item"
                    @mouseover="item.editable=true"
                    @mouseout="item.editable=false">
@@ -124,7 +124,7 @@ const resetHandle = function () {
 }
 const router = useRouter();
 const addHandle = function () {
-  router.push({path: '/visualEditor'})
+  router.push({path: '/visual-editor'})
 }
 
 const pageChange = function (e) {

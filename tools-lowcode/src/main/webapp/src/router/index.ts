@@ -38,7 +38,7 @@ const routes: Array<RouteRecordRaw> = [
             {
                 path: '/ds',
                 name: '数据源',
-                component: () => import('@/views/dataSource/index.vue'),
+                component: () => import('@/views/data-source/index.vue'),
                 meta: {
                     keepAlive: true,
                 }
@@ -46,7 +46,7 @@ const routes: Array<RouteRecordRaw> = [
         ]
     },
     {
-        path: '/codeGen',
+        path: '/code-gen',
         name: '代码生成',
         redirect: '/codeGen',
         component: () => import('@/views/layout/index.vue'),
@@ -54,7 +54,7 @@ const routes: Array<RouteRecordRaw> = [
             {
                 path: '/codeGen',
                 name: '代码生成',
-                component: () => import('@/views/codeGen/index.vue'),
+                component: () => import('@/views/code-gen/index.vue'),
                 meta: {
                     keepAlive: true,
                 }
@@ -70,7 +70,7 @@ const routes: Array<RouteRecordRaw> = [
             {
                 path: '/visual',
                 name: '页面',
-                component: () => import('@/views/visual/index.vue'),
+                component: () => import('@/views/visual-editor/home.vue'),
                 meta: {
                     keepAlive: true,
                 }
@@ -78,9 +78,9 @@ const routes: Array<RouteRecordRaw> = [
         ]
     },
     {
-        path: '/visualEditor',
+        path: '/visual-editor',
         name: '编辑器',
-        component: () => import('@/views/visual/home.vue'),
+        component: () => import('@/views/visual-editor/index.vue'),
         meta: {
             keepAlive: true,
         }
