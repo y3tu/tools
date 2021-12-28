@@ -7,9 +7,9 @@
     </el-header>
 
     <el-container class="layout-container">
-      <el-aside>
+      <el-aside width="380px">
         <!-- 左侧组件start -->
-
+        <LeftAside/>
         <!-- 左侧组件end -->
       </el-aside>
 
@@ -28,16 +28,19 @@
 </template>
 
 <script setup lang="ts">
-import { provide } from 'vue'
+import {provide} from 'vue'
 import Header from './components/header/index.vue'
+import LeftAside from './components/left-aside/index.vue'
 
 
+import {initVisualData, injectKey, localKey} from './hooks/useVisualData'
 
-import { initVisualData, injectKey, localKey } from './hooks/useVisualData'
 const visualData = initVisualData()
 
 // 注入可视化编辑器所有配置
 provide(injectKey, visualData)
+const {jsonData} = visualData
+
 
 //当浏览器窗口关闭或者刷新时，会触发beforeunload事件
 window.addEventListener('beforeunload', () => {

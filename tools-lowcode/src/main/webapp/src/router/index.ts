@@ -80,10 +80,7 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/visual-editor',
         name: '编辑器',
-        component: () => import('@/views/visual-editor/index.vue'),
-        meta: {
-            keepAlive: true,
-        }
+        component: () => import('@/views/visual-editor/index.vue')
     }
 ]
 
