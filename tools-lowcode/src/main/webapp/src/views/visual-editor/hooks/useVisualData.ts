@@ -9,7 +9,8 @@ import type {
     VisualEditorModel
 } from '../visual-editor.utils'
 import {CacheEnum} from '@/enums'
-import { visualConfig } from '../visual.config'
+//加载配置
+import {visualConfig} from '../visual.config'
 
 // 保存到本地JSON数据的key
 export const localKey = CacheEnum.PAGE_DATA_KEY
@@ -41,7 +42,7 @@ export const createNewPage = ({title = '新页面', path = '/'}) => ({
 const defaultValue: VisualEditorModelValue = {
     pages: {
         // 页面
-        '/': createNewPage({title: '首页'})
+        '/visual-editor': createNewPage({title: '首页'})
     },
     models: [], // 模型实体集合
     actions: {
@@ -60,15 +61,13 @@ const defaultValue: VisualEditorModelValue = {
 
 export const initVisualData = () => {
     const localData = JSON.parse(sessionStorage.getItem(localKey) as string)
-    const jsonData: VisualEditorModelValue = Object.keys(localData?.pages || {}).length
-        ? localData
-        : defaultValue
+    const jsonData: VisualEditorModelValue = Object.keys(localData?.pages || {}).length ? localData : defaultValue
     const route = useRoute()
     const router = useRouter()
-    console.log('jsonData：', jsonData)
     // 所有页面的path都必须以 / 开发
     const getPrefixPath = (path: string) => (path.startsWith('/') ? path : `/${path}`)
     const currentPage = jsonData.pages[route.path]
+    //状态数据
     const state: IState = reactive({
         jsonData,
         currentPage,
@@ -77,15 +76,15 @@ export const initVisualData = () => {
     const paths = Object.keys(jsonData.pages)
     const isExistPath = paths.some((path) => route.path == path)
     // 当前页面是否存在
-    if (!isExistPath) {
-        router.replace(paths[0] || '/')
-        state.currentPage = jsonData.pages[paths[0]] ?? defaultValue.pages['/']
-    }
+    // if (!isExistPath) {
+    //     router.replace(paths[0] || '/')
+    //     state.currentPage = jsonData.pages[paths[0]] ?? defaultValue.pages['/']
+    // }
     // 路由变化时更新当前操作的页面
-    watch(
-        () => route.path,
-        (url) => setCurrentPage(url)
-    )
+    // watch(
+    //     () => route.path,
+    //     (url) => setCurrentPage(url)
+    // )
     // 更新page
     const updatePage = ({newPath, oldPath, page}) => {
         console.log(state.jsonData.pages[oldPath], page)

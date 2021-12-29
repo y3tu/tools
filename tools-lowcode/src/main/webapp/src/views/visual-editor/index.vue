@@ -46,6 +46,7 @@ const {jsonData} = visualData
 window.addEventListener('beforeunload', () => {
   sessionStorage.setItem(localKey, JSON.stringify(jsonData))
 })
+
 </script>
 
 <style lang="scss">
