@@ -17,7 +17,6 @@
 <script lang="ts">
 import {defineComponent, reactive, toRefs} from 'vue'
 import components from './components'
-
 const tabs = Object.keys(components)
     .map((name) => {
       const {label, icon, order} = components[name]
@@ -44,28 +43,5 @@ export default defineComponent({
 <style lang="scss" scoped>
 .left-aside {
   height: 100%;
-  contain: layout;
-
-  > :deep(.el-tabs__header) {
-    margin-right: 0;
-
-    .el-tabs__item {
-      height: 80px;
-      padding: 20px 16px;
-
-      .tab-item {
-        @apply flex flex-col items-center justify-center;
-
-        [class^='el-icon-'] {
-          font-size: 20px;
-        }
-      }
-    }
-  }
-
-  > :deep(.el-tabs__content) {
-    height: 100%;
-    overflow-y: auto;
-  }
 }
 </style>
