@@ -1,7 +1,11 @@
-package com.y3tu.tools.web.sql.ds;
+package com.y3tu.tools.web.db.ds;
+
+import com.y3tu.tools.kit.lang.Assert;
+import com.y3tu.tools.kit.text.StrUtil;
 
 import javax.sql.DataSource;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -23,23 +27,6 @@ public abstract class DsFactory implements Cloneable, Serializable {
     public static final String[] KEY_CONN_PROPS = {"remarks", "useInformationSchema"};
 
     /**
-     * 别名字段名：URL
-     */
-    public static final String[] KEY_ALIAS_URL = {"url", "jdbcUrl"};
-    /**
-     * 别名字段名：驱动名
-     */
-    public static final String[] KEY_ALIAS_DRIVER = {"driver", "driverClassName"};
-    /**
-     * 别名字段名：用户名
-     */
-    public static final String[] KEY_ALIAS_USER = {"user", "username"};
-    /**
-     * 别名字段名：密码
-     */
-    public static final String[] KEY_ALIAS_PASSWORD = {"pass", "password"};
-
-    /**
      * 数据源池
      */
     private final Map<String, DataSourceWrapper> dsMap;
@@ -49,10 +36,11 @@ public abstract class DsFactory implements Cloneable, Serializable {
      */
     private final DbConfig dbConfig;
 
-    public DsFactory(String dataSourceName, DbConfig dbConfig) {
-        this.dataSourceName = dataSourceName;
-        this.dsMap = new ConcurrentHashMap<>();
+    public DsFactory(DbConfig dbConfig) {
         this.dbConfig = dbConfig;
+        Assert.isNull(dbConfig.getDataSourceName(), "请填写数据源名称");
+        this.dataSourceName = dbConfig.getDataSourceName();
+        this.dsMap = new ConcurrentHashMap<>();
     }
 
     /**
@@ -84,14 +72,32 @@ public abstract class DsFactory implements Cloneable, Serializable {
     /**
      * 关闭对应数据源
      *
-     * @param group 分组
+     * @param dataSourceName 数据源名称
      */
-    public abstract void close(String group);
+    public void close(String dataSourceName) {
+        if (dataSourceName == null) {
+            dataSourceName = StrUtil.EMPTY;
+        }
+
+        DataSourceWrapper ds = dsMap.get(dataSourceName);
+        if (ds != null) {
+            ds.close();
+            dsMap.remove(dataSourceName);
+        }
+    }
 
     /**
      * 销毁工厂类，关闭所有数据源
      */
-    public abstract void destroy();
+    public void destroy() {
+        if (!dsMap.isEmpty()) {
+            Collection<DataSourceWrapper> values = dsMap.values();
+            for (DataSourceWrapper ds : values) {
+                ds.close();
+            }
+            dsMap.clear();
+        }
+    }
 
     public static DsFactory create(DbConfig dbConfig) {
         return doCreate(dbConfig);
@@ -107,10 +113,14 @@ public abstract class DsFactory implements Cloneable, Serializable {
      */
     private static DsFactory doCreate(DbConfig dbConfig) {
         try {
+            return new HikariDsFactory(dbConfig);
+        } catch (NoClassDefFoundError e) {
+            // ignore
+        }
+        try {
             return new DruidDsFactory(dbConfig);
         } catch (NoClassDefFoundError e) {
             // ignore
-
         }
         return null;
     }

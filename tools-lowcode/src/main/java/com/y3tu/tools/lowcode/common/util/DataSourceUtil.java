@@ -3,9 +3,9 @@ package com.y3tu.tools.lowcode.common.util;
 
 import com.y3tu.tools.lowcode.common.entity.domain.DataSource;
 import com.y3tu.tools.lowcode.common.service.DataSourceService;
-import com.y3tu.tools.web.sql.ds.DataSourceWrapper;
-import com.y3tu.tools.web.sql.ds.DbConfig;
-import com.y3tu.tools.web.sql.ds.DsFactory;
+import com.y3tu.tools.web.db.ds.DataSourceWrapper;
+import com.y3tu.tools.web.db.ds.DbConfig;
+import com.y3tu.tools.web.db.ds.DsFactory;
 import com.y3tu.tools.web.util.SpringContextUtil;
 
 /**

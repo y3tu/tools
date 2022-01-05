@@ -1,4 +1,4 @@
-package com.y3tu.tools.web.sql;
+package com.y3tu.tools.web.db;
 
 /**
  * 数据源类型枚举

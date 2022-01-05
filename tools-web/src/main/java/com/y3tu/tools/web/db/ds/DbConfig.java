@@ -1,4 +1,4 @@
-package com.y3tu.tools.web.sql.ds;
+package com.y3tu.tools.web.db.ds;
 
 import lombok.Data;
 
@@ -11,7 +11,10 @@ import java.util.Properties;
  */
 @Data
 public class DbConfig {
-
+    /**
+     * 数据源名称
+     */
+    private String dataSourceName;
     /**
      * 数据库驱动
      */

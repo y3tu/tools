@@ -1,4 +1,4 @@
-package com.y3tu.tools.web.sql;
+package com.y3tu.tools.web.db.page;
 
 import java.util.List;
 

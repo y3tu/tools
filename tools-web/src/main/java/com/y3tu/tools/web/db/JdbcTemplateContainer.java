@@ -1,4 +1,4 @@
-package com.y3tu.tools.web.sql;
+package com.y3tu.tools.web.db;
 
 import com.y3tu.tools.kit.exception.ToolException;
 import org.springframework.jdbc.core.JdbcTemplate;

@@ -16,22 +16,27 @@ import java.util.jar.JarFile;
 
 /**
  * 控制台横幅工具
+ * 生成banner地址：http://patorjk.com/software/taag
  *
  * @author y3tu
  */
 public class Banner {
 
-    private static final String name = "Tomato";
-    private static final String defaultBanner = "" +
-            "\\ \\   /___ /__ __| |   |   __ __| _ \\   _ \\  |     \n" +
-            " \\   /   _ \\   |   |   |      |  |   | |   | |     \n" +
-            "    |     ) |  |   |   |      |  |   | |   | |     \n" +
-            "   _|  ____/  _|  \\___/      _| \\___/ \\___/ _____| ";
+    private static final String name = "Tools";
+    private static final String defaultBanner = "  ______            __    \n" +
+            " /_  __/___  ____  / /____\n" +
+            "  / / / __ \\/ __ \\/ / ___/\n" +
+            " / / / /_/ / /_/ / (__  ) \n" +
+            "/_/  \\____/\\____/_/____/  \n" +
+            "                          ";
 
     public static void print() {
         printVersion();
     }
 
+    /**
+     * 打印版本号
+     */
     private static void printVersion() {
         PrintStream printStream = System.out;
         String version = Banner.getVersion();
@@ -48,6 +53,11 @@ public class Banner {
         printStream.println();
     }
 
+    /**
+     * 获取组件版本号
+     *
+     * @return String
+     */
     private static String getVersion() {
         String implementationVersion = Banner.class.getPackage().getImplementationVersion();
         if (implementationVersion != null) {
@@ -96,6 +106,12 @@ public class Banner {
         }
     }
 
+    /**
+     * 获取包文件对应的版本用于banner的打印
+     *
+     * @param jarFile 文件
+     * @return String 版本号
+     */
     private static String getImplementationVersion(JarFile jarFile) throws IOException {
         return jarFile.getManifest().getMainAttributes().getValue(Attributes.Name.IMPLEMENTATION_VERSION);
     }

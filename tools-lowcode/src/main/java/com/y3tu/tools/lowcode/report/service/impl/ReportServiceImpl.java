@@ -21,7 +21,7 @@ import com.y3tu.tools.lowcode.report.service.ReportAttachmentService;
 import com.y3tu.tools.lowcode.report.service.ReportParamService;
 import com.y3tu.tools.lowcode.report.service.ReportService;
 import com.y3tu.tools.lowcode.report.util.JasperReportUtil;
-import com.y3tu.tools.web.sql.SqlUtil;
+import com.y3tu.tools.web.db.SqlUtil;
 import com.y3tu.tools.web.storge.RemoteFileHelper;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JasperReport;

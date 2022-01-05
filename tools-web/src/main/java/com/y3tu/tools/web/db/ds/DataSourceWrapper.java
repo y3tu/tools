@@ -1,4 +1,4 @@
-package com.y3tu.tools.web.sql.ds;
+package com.y3tu.tools.web.db.ds;
 
 import com.y3tu.tools.kit.io.IoUtil;
 

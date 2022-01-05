@@ -1,7 +1,7 @@
 package com.y3tu.tools.web.configure;
 
 import com.y3tu.tools.kit.reflect.ReflectUtil;
-import com.y3tu.tools.web.sql.JdbcTemplateContainer;
+import com.y3tu.tools.web.db.JdbcTemplateContainer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;

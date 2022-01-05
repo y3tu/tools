@@ -1,5 +1,6 @@
-package com.y3tu.tools.web.sql;
+package com.y3tu.tools.web.db.page;
 
+import com.y3tu.tools.web.db.JdbcTemplateContainer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 

@@ -1,4 +1,4 @@
-package com.y3tu.tools.web.sql.ds;
+package com.y3tu.tools.web.db.ds;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.y3tu.tools.kit.text.StrUtil;
@@ -12,16 +12,13 @@ import java.util.Properties;
  * @author y3tu
  */
 public class DruidDsFactory extends DsFactory {
-
-    public static final String DS_NAME = "Druid";
-
     /**
      * 构造
      *
      * @param dbConfig 数据库配置
      */
     public DruidDsFactory(DbConfig dbConfig) {
-        super(DS_NAME, dbConfig);
+        super(dbConfig);
     }
 
     @Override
@@ -58,13 +55,4 @@ public class DruidDsFactory extends DsFactory {
         return ds;
     }
 
-    @Override
-    public void close(String group) {
-
-    }
-
-    @Override
-    public void destroy() {
-
-    }
 }

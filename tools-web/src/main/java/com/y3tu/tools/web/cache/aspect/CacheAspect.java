@@ -75,7 +75,7 @@ public class CacheAspect {
     }
 
     @Around("cacheablePointcut()")
-    public Object cacheblePointcut(ProceedingJoinPoint joinPoint) {
+    public Object cacheablePointcut(ProceedingJoinPoint joinPoint) {
         CacheOperationInvoker aopAllianceInvoker = getCacheOperationInvoker(joinPoint);
         // 获取method
         Method method = this.getSpecificMethod(joinPoint);
