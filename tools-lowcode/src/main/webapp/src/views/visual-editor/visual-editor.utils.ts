@@ -1,95 +1,279 @@
-import {provide, inject} from 'vue';
+import type {CSSProperties} from 'vue'
+import { inject, provide } from 'vue'
+import type {VisualEditorProps} from './visual-editor.props'
+import type { RequestEnum, ContentTypeEnum } from '@/enums/httpEnum'
+import utils from '@/utils'
+import {useDotProp} from './hooks/useDotProp'
+//----------------------------------------数据-------------------------------------------------
 
-import {VisualEditorProps} from './visual-editor.props'
-
-//全局数据
+//总的数据集
 export interface VisualEditorModelValue {
-    //页面数据
-    container: VisualEditorContainer;
-    //当前所有组件数据
-    blocks?: VisualEditorBlockData[];
-    //当前选中的组件
-    selectBlock: VisualEditorBlockData,
-    //选中组件索引
-    selectIndex: number,
-    //快照
-    snapshotData: VisualEditorBlockData[],
-    //快照索引
-    snapshotIndex: number,
+    /** 实体 */
+    models: VisualEditorModel[]
+    /** 动作 */
+    actions: VisualEditorActions
 }
 
-//页面类型声明
-export interface VisualEditorContainer {
-    //页面宽度
-    width: number;
-    //页面高度
-    height: number;
-    //页面缩放比例
-    scale: number;
-    //背景图片
+//数据模型
+export interface VisualEditorModel {
+    /** 数据源名称 */
+    name: string
+    /** 绑定的字段 该字段创建的时候生成 */
+    key: string
+    /** 实体集合 */
+    entitys: EntityType[]
+}
+
+// 实体类型
+export type EntityType = {
+    /** 绑定的字段 输入 */
+    key: string
+    /** 实体名称 输入 */
+    name: string
+    /** 数据类型 选择 */
+    type: string
+    /** 默认值 输入 */
+    value: string
+}
+
+//动作集合
+export interface VisualEditorActions {
+    fetch: {
+        name: '接口请求'
+        apis: FetchApiItem[]
+    }
+    dialog: {
+        name: '对话框'
+        handlers: []
+    }
+}
+
+//接口请求对象
+export interface FetchApiItem {
+    /**  随机生成的key */
+    key: string
+    /** 随机生成的key */
+    name: string
+    options: {
+        /** 请求的url */
+        url: string
+        /** 请求的方法 */
+        method: keyof typeof RequestEnum
+        /** 请求的内容类型 */
+        contentType: keyof typeof ContentTypeEnum
+    }
+    data: {
+        /** 请求绑定对应的某个实体 */
+        bind: string
+        /** 响应的结果绑定到某个实体上 */
+        recv: string
+    }
+}
+
+//----------------------------------------页面-------------------------------------------------
+//页面对象
+export interface VisualEditorPage {
+    /** 页面标题 */
+    title: string
+    /** 页面路径 */
+    path: string
+    /** 404是重定向到默认页面 */
+    isDefault?: boolean
+    /** 页面配置 */
+    config: PageConfig
+    /** 当前页面的所有组件 */
+    blocks: VisualEditorBlockData[]
+}
+//页面配置
+export interface PageConfig {
+    /** 背景图片 */
     bgImage: string
-    //背景颜色
+    /** 背景颜色 */
     bgColor: string
+    /** 是否缓存当前页面 */
+    keepAlive: boolean
 }
 
-// block类型声明
-export interface VisualEditorBlockData {
-    componentKey: string; // text, input ...
-    width: number; // block的宽度
-    height: number;// block的高度
-    top: number;  // 位置
-    left: number; // 位置
-    adjustPosition?: boolean; // 鼠标抬起时是否需要调整位置（为true时，鼠标抬起，组件的中间位置位于鼠标的位置）
-    focus?: boolean; // 是否为选中状态
-    zIndex: number; // 权重，用于置顶置底
-    hasResize?: boolean; // 是否调整过宽度，用于展示block的时候，如果调整过宽度则渲染数据中的width和height
-    props: Record<string, any>; // 组件的设计属性
-    model: Record<string, string>; // 绑定的字段
-    slotName?: string; // slotName -组件唯一标识
-}
+//----------------------------------------组件-------------------------------------------------
 
-
+//单个组件注册规则
 export interface VisualEditorComponent {
-    key: string, // text、input、button、select...
-    label: string, // 文本、输入框、按钮、下拉框...
-    preview: () => JSX.Element, // 默认渲染
-    render: (data: { // 画布渲染，给当前block添加属性
-        props: any, // 属性
-        model: any, // 绑定值
-        size: { width?: number, height?: number }, // 宽高
-        custom: Record<string, any> // 自定义属性
-    }) => JSX.Element,
-    props?: Record<string, VisualEditorProps>, // 绑定属性（用于右侧）
-    model?: Record<string, string>, // 用于右侧绑定值的标识（用于右侧）
-    resize?: { width?: boolean, height?: boolean } // 是否可拖拽改变宽高
+    /** 组件name */
+    key: string
+    /** 组件所属模块名称 */
+    moduleName: keyof ComponentModules
+    /** 组件唯一id */
+    _vid?: string
+    /** 组件中文名称 */
+    label: string
+    /** 组件预览函数 */
+    preview: () => JSX.Element
+    /** 组件渲染函数 */
+    render: (data: {
+        props: any
+        model: any
+        styles: CSSProperties
+        block: VisualEditorBlockData
+        custom: Record<string, any>
+    }) => () => JSX.Element
+    /** 组件是否可以被拖拽 */
+    draggable?: boolean
+    /** 是否显示组件的样式配置项 */
+    showStyleConfig?: boolean
+    /** 组件属性 */
+    props?: Record<string, VisualEditorProps>
+    /** 动画集 */
+    animations?: Animation[]
+    /** 组件事件集合 */
+    events?: { label: string; value: string }[]
+    /** 组件样式 */
+    styles?: CSSProperties
 }
 
-// focusData
-export interface VisualEditorFocusData {
-    //选中的组件
-    focus: VisualEditorBlockData[];
-    //未选中的组件
-    unFocus: VisualEditorBlockData[];
-}
 
-// state
-export interface VisualEditorState {
-    //当前选中的组件
-    selectBlock: VisualEditorBlockData,
-    preview: boolean,
-    editFlag: boolean
-}
-
-/**
- * 组件模块
- */
+// 组件模块
 export interface ComponentModules {
     baseWidgets: VisualEditorComponent[] // 基础组件
     containerComponents: VisualEditorComponent[] // 容器组件
 }
 
-// 创建可视化编辑器配置
-// 返回组件列表、组件映射、注册函数
+//组件属性
+export interface VisualEditorBlockData {
+    /** 组件id 时间戳, 组件唯一标识 */
+    _vid: string
+    /** 组件所属的模块（基础组件、容器组件） */
+    moduleName: keyof ComponentModules
+    /** 映射 VisualEditorConfig 中 componentMap 的 component对象 */
+    componentKey: string
+    /** 组件标签名称 */
+    label: string
+    /** 是否需要调整位置 */
+    adjustPosition: boolean
+    /** 当前是否为选中状态 */
+    focus: boolean
+    /** 当前组件的样式 */
+    styles: CSSProperties
+    /** 是否调整过宽度或者高度 */
+    hasResize: boolean
+    /** 组件的设计属性 */
+    props: Record<string, any>
+    /** 绑定的字段 */
+    model: Record<string, string>
+    /** 组件是否可以被拖拽 */
+    draggable: boolean
+    /** 是否显示组件样式配置项 */
+    showStyleConfig?: boolean
+    /** 动画集 */
+    animations?: Animation[]
+    /** 组件动作集合 */
+    actions: Action[]
+    /** 组件事件集合 */
+    events: { label: string; value: string }[]
+
+    [prop: string]: any
+}
+
+//动画项
+export interface Animation {
+    /** 动画名称 */
+    label: string
+    /** 动画类名 */
+    value: string
+    /** 动画持续时间 */
+    duration: number
+    /** 动画延迟多久执行 */
+    delay: number
+    /** 动画执行次数 */
+    count: number
+    /** 是否无限循环动画 */
+    infinite: boolean
+}
+
+//----------------------------------------动作事件-------------------------------------------------
+
+//组件动作
+export interface Action {
+    key: string
+    name: string
+    event: string
+    handle: ActionHandle[]
+}
+
+//组件动作事件处理
+export interface ActionHandle {
+    key: string
+    name: string
+    link: string[]
+    data?: {
+        bind?: string
+        recv?: string
+    }
+}
+
+export interface VisualDragEvent {
+    dragstart: {
+        on: (cb: () => void) => void
+        off: (cb: () => void) => void
+        emit: () => void
+    }
+    dragend: {
+        on: (cb: () => void) => void
+        off: (cb: () => void) => void
+        emit: () => void
+    }
+}
+
+export const VisualDragProvider = (() => {
+    const VISUAL_DRAG_PROVIDER = '@@VISUAL_DRAG_PROVIDER'
+    return {
+        provide: (data: VisualDragEvent) => {
+            provide(VISUAL_DRAG_PROVIDER, data)
+        },
+        inject: () => {
+            return inject(VISUAL_DRAG_PROVIDER) as VisualDragEvent
+        }
+    }
+})()
+
+//----------------------------------------方法-------------------------------------------------
+
+//创建一个新的组件
+export function createNewBlock(component: VisualEditorComponent): VisualEditorBlockData {
+    return {
+        _vid: `vid_${utils.common.generateNanoid()}`,
+        moduleName: component.moduleName,
+        componentKey: component!.key,
+        label: component!.label,
+        adjustPosition: true,
+        focus: false,
+        styles: {
+            display: 'flex',
+            justifyContent: 'flex-start',
+            paddingTop: '0',
+            paddingRight: '0',
+            paddingLeft: '0',
+            paddingBottom: '0',
+            tempPadding: '0'
+        },
+        hasResize: false,
+        props: Object.keys(component.props || {}).reduce((prev, curr) => {
+            const { propObj, prop } = useDotProp(prev, curr)
+            if (component.props![curr]?.defaultValue) {
+                propObj[prop] = prev[curr] = component.props![curr]?.defaultValue
+            }
+            return prev
+        }, {}),
+        draggable: component.draggable ?? true, // 是否可以拖拽
+        showStyleConfig: component.showStyleConfig ?? true, // 是否显示组件样式配置
+        animations: [], // 动画集
+        actions: [], // 动作集合
+        events: component.events || [], // 事件集合
+        model: {}
+    }
+}
+
+
+//创建编辑器配置
 export function createVisualEditorConfig() {
     const componentModules: ComponentModules = {
         baseWidgets: [],
@@ -99,101 +283,33 @@ export function createVisualEditorConfig() {
     return {
         componentModules,
         componentMap,
-        registry: <Props extends Record<string, VisualEditorProps> = {},
-            Model extends Record<string, string> = {}>(
+        registry: <
+            _,
+            Props extends Record<string, VisualEditorProps> = {},
+            Model extends Record<string, string> = {}
+            >(
             moduleName: keyof ComponentModules,
             key: string,
-            componentOptions: {
-                label: string,
-                preview: () => JSX.Element,
+            component: {
+                label: string
+                preview: () => JSX.Element
                 render: (data: {
-                    props: { [k in keyof Props]: any },
-                    model: Partial<{ [k in keyof Model]: any }>,
-                    size: { width?: number, height?: number },
+                    props: { [k in keyof Props]: any }
+                    model: Partial<{ [k in keyof Model]: any }>
+                    styles: CSSProperties
+                    block: VisualEditorBlockData
                     custom: Record<string, any>
-                }) => JSX.Element,
-                props?: Props,
-                model?: Model,
-                resize?: { width?: boolean, height?: boolean }
-            }) => {
-            let comp = {...componentOptions, key, moduleName};
+                }) => () => JSX.Element
+                props?: Props
+                model?: Model
+                styles?: CSSProperties
+            }
+        ) => {
+            const comp = { ...component, key, moduleName }
             componentModules[moduleName].push(comp)
-            componentMap[key] = comp;
+            componentMap[key] = comp
         }
     }
 }
 
-// 创建block
-export function createNewBlock({component, top, left}: { component: VisualEditorComponent, top: number, left: number }): VisualEditorBlockData {
-    return {
-        componentKey: component!.key, // input、text...
-        width: 0,
-        height: 0,
-        top,  // 距离顶部位置
-        left, // 距离左侧位置
-        adjustPosition: true, // 鼠标松开是否调整block位置居中
-        focus: false, // 是否为选中态
-        zIndex: 0, // 权重，用于置顶置底
-        hasResize: false, // 是否已经改变了block的宽高，改变了则使用数据中保存的宽高
-        props: {}, // 配置的属性
-        model: {}  // 绑定的字段
-    }
-}
-
-
-// 当前操作block的标志线
-export interface VisualEditorMarkLines {
-    x: { left: number, markX: number }[],
-    y: { top: number, markY: number }[]
-}
-
-//-----------------------------------------------事件-----------------------------------------------
-
-// 拖拽事件类型定义
-export interface VisualDragEvent {
-    dragStart: {
-        on: (cb: () => void) => void,
-        off: (cb: () => void) => void,
-        emit: () => void,
-    },
-    dragEnd: {
-        on: (cb: () => void) => void,
-        off: (cb: () => void) => void,
-        emit: () => void,
-    }
-}
-
-// 左侧菜单和中间容器通信
-export interface VisualEventBus {
-    eventBus: { // 左侧组件开始拖拽， 给容器绑定事件
-        on: (cb: (dragComponent?: any) => void) => void,
-        off: (cb: (dragComponent?: any) => void) => void,
-        emit: (dragComponent?: any) => void
-    }
-}
-
-// 用于拖拽的 provide inject
-export const VisualDragProvider = (() => {
-    const VISUAL_DRAG_PROVIDER = '@@VISUAL_DRAG_PROVIDER';
-    return {
-        provide: (data: VisualDragEvent) => {
-            provide(VISUAL_DRAG_PROVIDER, data);
-        },
-        inject: () => {
-            return inject(VISUAL_DRAG_PROVIDER) as VisualDragEvent;
-        }
-    }
-})();
-
-// 用于左侧菜单组件和容器组件通信的 provide inject
-export const VisualEventBusProvider = (() => {
-    const VISUAL_EVENTBUS_PROVIDER = '@@VISUAL_EVENTBUS_PROVIDER';
-    return {
-        provide: (data: VisualEventBus) => {
-            provide(VISUAL_EVENTBUS_PROVIDER, data);
-        },
-        inject: () => {
-            return inject(VISUAL_EVENTBUS_PROVIDER) as VisualEventBus;
-        }
-    }
-})();
+export type VisualEditorConfig = ReturnType<typeof createVisualEditorConfig>

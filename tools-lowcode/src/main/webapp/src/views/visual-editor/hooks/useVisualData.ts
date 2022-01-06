@@ -1,103 +1,81 @@
-import {reactive, inject, computed} from 'vue'
+import {reactive,readonly, inject, computed} from 'vue'
 import type {InjectionKey} from 'vue'
 import type {
+    VisualEditorPage,
     VisualEditorModelValue,
     VisualEditorBlockData
 } from '../visual-editor.utils'
-
-//加载组件配置
 import {visualConfig} from '../visual.config'
-//注入jsonData的key
+
+import {CacheEnum} from '@/enums'
+// 保存到本地JSON数据的key
+export const localKey = CacheEnum.PAGE_DATA_KEY
+
+// 注入jsonData的key
 export const injectKey: InjectionKey<ReturnType<typeof initVisualData>> = Symbol()
 
+interface IState {
+    currentBlock: VisualEditorBlockData // 当前正在操作的组件
+    currentPage: VisualEditorPage // 当前正在操作的页面
+    jsonData: VisualEditorModelValue // 整棵JSON树
+}
+
+const page = {
+    title: 'test',
+    path: '/testVisual',
+    config: {
+        bgColor: '',
+        bgImage: '',
+        keepAlive: false
+    },
+    blocks: []
+}
+
+const defaultValue: VisualEditorModelValue = {
+    models: [], // 模型实体集合
+    actions: {
+        // 动作集合
+        fetch: {
+            name: '接口请求',
+            apis: []
+        },
+        dialog: {
+            name: '对话框',
+            handlers: []
+        }
+    }
+}
 
 export const initVisualData = () => {
-    //全局数据
-    const dataModel: VisualEditorModelValue = reactive({
-        //页面宽高
-        container: {
-            width: 1000,
-            height: 1000,
-            scale: 100,
-            bgColor: '',
-            bgImage: ''
-        },
-        //页面组件集合
-        blocks: [] as VisualEditorBlockData[],
-        //当前选中的组件
-        selectBlock: {} as VisualEditorBlockData,
-        //选中组件索引
-        selectIndex: -1,
-        //快照
-        snapshotData: [],
-        //快照索引
-        snapshotIndex: -1,
+    const localData = JSON.parse(sessionStorage.getItem(localKey) as string)
+    const jsonData: VisualEditorModelValue = Object.keys(localData?.pages || {}).length
+        ? localData
+        : defaultValue
+
+    const state: IState = reactive({
+        jsonData,
+        currentPage: page,
+        currentBlock: page?.blocks?.find((item) => item.focus) ?? ({} as VisualEditorBlockData)
     })
 
-    // 计算选中与未选中的block
-    const focusData = computed(() => {
-        let focus: VisualEditorBlockData[] = [];
-        let unFocus: VisualEditorBlockData[] = [];
-        (dataModel.blocks || []).forEach(block => (block.focus ? focus : unFocus).push(block))
-        return {
-            focus,
-            unFocus
-        }
-    })
-
-    //公共方法
-    const publicMethods = {
-        //更新dataModel
-        updateDataModel: (modelValue: VisualEditorModelValue) => {
-            dataModel.container = modelValue.container;
-            dataModel.blocks = modelValue.blocks
-            dataModel.selectBlock = modelValue.selectBlock;
-            dataModel.selectIndex = modelValue.selectIndex;
-            dataModel.snapshotData = modelValue.snapshotData;
-            dataModel.snapshotIndex = modelValue.snapshotIndex;
-        },
-
-        //清除选中的block
-        clearFocus: (block?: VisualEditorBlockData) => {
-            let blocks = (dataModel.blocks || []);
-            if (!blocks.length) return;
-            if (!!blocks) {
-                blocks = blocks.filter(item => item !== block);
-            }
-            blocks.forEach(block => block.focus = false);
-        },
-
-        //更新block，渲染最新数据
-        updateBlocks: (blocks?: VisualEditorBlockData[]) => {
-            dataModel.blocks = blocks
-        },
-
-        //更新单个block
-        updateBlock: (newBlock: VisualEditorBlockData, oldBlock: VisualEditorBlockData) => {
-            let oldBlocks = dataModel.blocks || [];
-            // 找到位置，替换成新的block
-            let blocks = [...oldBlocks];
-            const index = oldBlocks.indexOf(oldBlock);
-            if (index > -1) {
-                blocks.splice(index, 1, newBlock);
-            }
-            publicMethods.updateBlocks(blocks);
-        },
-
-        // 重置selectIndex
-        resetSelectIndex: (index: number) => {
-            dataModel.selectIndex = index;
-        },
-
+    // 设置当前被操作的组件
+    const setCurrentBlock = (block: VisualEditorBlockData) => {
+        state.currentBlock = block
     }
 
-    return {
-        visualConfig,
-        dataModel,
-        focusData,
-        ...publicMethods
+    // 更新pages下面的blocks
+    const updatePageBlock = (path = '', blocks: VisualEditorBlockData[] = []) => {
+        state.jsonData.pages[path].blocks = blocks
+    }
+
+    return{
+        visualConfig:visualConfig,
+        jsonData: readonly(state.jsonData), // 保护JSONData避免直接修改
+        currentPage: computed(() => state.currentPage),
+        currentBlock: computed(() => state.currentBlock),
+        setCurrentBlock,
+        updatePageBlock
     }
 }
 
 export const useVisualData = () => inject<ReturnType<typeof initVisualData>>(injectKey)!
-

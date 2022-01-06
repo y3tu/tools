@@ -15,7 +15,7 @@
 
       <el-main>
         <!-- 中间编辑区域start -->
-        <VisualEditorContent/>
+        <SimulatorEditor/>
         <!-- 中间编辑区域end -->
 
         <!-- 右侧属性面板start -->
@@ -31,24 +31,21 @@
 import {provide} from 'vue'
 import Header from './components/header/index.vue'
 import LeftAside from './components/left-aside/index.vue'
-import {VisualEditorContent} from './components/content/index'
+import SimulatorEditor from './components/simulator-editor/simulator-editor.vue'
 
-import {VisualEventBusProvider} from './visual-editor.utils'
-import {createEvent} from "./utils/event";
-// 订阅事件，用于左侧组件拖拽时，联动给容器添加事件
-const eventBus = createEvent();
-VisualEventBusProvider.provide({eventBus});
-
-import {initVisualData, injectKey} from './hooks/useVisualData'
+import {initVisualData, injectKey,localKey} from './hooks/useVisualData'
 
 const visualData = initVisualData()
 
 // 注入可视化编辑器所有配置
 provide(injectKey, visualData)
 
+const { jsonData } = visualData
+
+
 //当浏览器窗口关闭或者刷新时，会触发beforeunload事件
 window.addEventListener('beforeunload', () => {
-
+  sessionStorage.setItem(localKey, JSON.stringify(jsonData))
 })
 
 </script>

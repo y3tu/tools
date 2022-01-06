@@ -1,3 +1,5 @@
+import {customAlphabet} from 'nanoid'
+
 const common = {
     /**
      * 获取到随机整数
@@ -68,7 +70,14 @@ const common = {
             return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
         });
         return uuid;
+    },
+    /**
+     * 生成nanoid
+     */
+    generateNanoid() {
+        return customAlphabet('1234567890abcdef', 10)
     }
+
 }
 
 export default common

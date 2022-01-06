@@ -17,10 +17,10 @@ import type { VisualEditorComponent } from '../../../visual-editor.utils'
 import { fontArr } from './fontArr'
 
 export default {
-    key: 'text',
+    key: 'text1',
     moduleName: 'baseWidgets',
     label: '文本',
-    preview: () => <span>预览文本</span>,
+    preview: () => <span>预览文本1</span>,
     render: ({ props, block, styles }) => {
         const { registerRef } = useGlobalProperties()
 

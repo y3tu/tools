@@ -69,7 +69,7 @@ export default defineComponent({
             title: '代码生成'
           },
           {
-            route: '/visual',
+            route: '/visual-editor',
             title: '可视化设计'
           },
         ])
