@@ -8,8 +8,7 @@
 
     <!--    中间操作页面部分 start-->
     <el-col :span="12" class="tool-button">
-      <el-button type="warning" size="small" :icon="RefreshLeft" round>撤销</el-button>
-      <el-button type="warning" size="small" :icon="Brush" round>重做</el-button>
+      <el-button type="warning" size="small" :icon="Back" round @click.passive="backHandler">返回</el-button>
       <el-button type="primary" size="small" :icon="View" round>预览</el-button>
       <el-button type="primary" size="small" :icon="Cloudy" round>保存</el-button>
     </el-col>
@@ -18,17 +17,27 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, reactive, toRefs} from 'vue'
-import {RefreshLeft,View,Cloudy,Brush} from '@element-plus/icons-vue'
+import {defineComponent} from 'vue'
+import {useRouter} from "vue-router";
+import {Back, RefreshLeft, View, Cloudy, Brush} from '@element-plus/icons-vue'
 
 export default defineComponent({
   name: 'Header',
   setup() {
+    const router = useRouter();
+
+    //返回上一页
+    const backHandler = () => {
+      router.back();
+    }
+
     return {
+      Back,
       RefreshLeft,
       View,
       Cloudy,
-      Brush
+      Brush,
+      backHandler
     }
   }
 })

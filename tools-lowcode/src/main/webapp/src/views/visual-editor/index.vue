@@ -7,7 +7,7 @@
     </el-header>
 
     <el-container class="layout-container">
-      <el-aside width="250px">
+      <el-aside width="380px">
         <!-- 左侧组件start -->
         <LeftAside/>
         <!-- 左侧组件end -->
@@ -19,7 +19,7 @@
         <!-- 中间编辑区域end -->
 
         <!-- 右侧属性面板start -->
-
+        <RightAttributePanel/>
         <!-- 右侧属性面板end -->
       </el-main>
 
@@ -32,7 +32,7 @@ import {provide} from 'vue'
 import Header from './components/header/index.vue'
 import LeftAside from './components/left-aside/index.vue'
 import SimulatorEditor from './components/simulator-editor/simulator-editor.vue'
-
+import RightAttributePanel from './components/right-attribute-panel'
 import {initVisualData, injectKey,localKey} from './hooks/useVisualData'
 
 const visualData = initVisualData()

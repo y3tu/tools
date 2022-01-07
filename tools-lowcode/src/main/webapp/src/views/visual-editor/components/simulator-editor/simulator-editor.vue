@@ -51,9 +51,9 @@
   </div>
 </template>
 
-<script lang="tsx">
+<script lang="ts">
 import { defineComponent, reactive, watchEffect, toRefs } from 'vue'
-import type { VisualEditorBlockData } from '../../visual-editor.utils'
+import {VisualEditorBlockData } from '../../visual-editor.utils'
 import DraggableTransitionGroup from './draggable-transition-group.vue'
 import CompRender from './comp-render'
 import SlotItem from './slot-item.vue'
@@ -198,7 +198,7 @@ export default defineComponent({
   height: 100%;
   padding-right: 380px;
   align-items: center;
-  justify-content: center;
+  justify-content: left;
 
   @media (max-width: 1114px) {
     padding-right: 0;

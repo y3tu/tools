@@ -89,7 +89,7 @@ export default defineComponent({
 
 .list-group {
   height: 100%;
-  min-height: 40px;
+  min-height: 500px;
 
 }
 </style>

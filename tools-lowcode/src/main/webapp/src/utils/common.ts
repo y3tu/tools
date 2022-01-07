@@ -75,7 +75,7 @@ const common = {
      * 生成nanoid
      */
     generateNanoid() {
-        return customAlphabet('1234567890abcdef', 10)
+        return customAlphabet('1234567890abcdef', 10)();
     }
 
 }

@@ -1,7 +1,7 @@
-import {defineComponent,ref} from 'vue'
-import { cloneDeep } from 'lodash'
+import {defineComponent, ref} from 'vue'
+import {cloneDeep} from 'lodash'
 import {visualConfig} from "@/views/visual-editor/visual.config";
-import {createNewBlock} from '../../../../visual-editor.utils'
+import {createNewBlock, VisualEditorComponent} from '../../../../visual-editor.utils'
 import styles from './index.module.scss'
 import DraggableTransitionGroup from '../../../simulator-editor/draggable-transition-group.vue'
 
@@ -15,13 +15,13 @@ export default defineComponent({
         const baseWidgets = ref(visualConfig.componentModules.baseWidgets)
 
         // 克隆组件
-        const cloneDog = (comp) => {
+        const cloneDog = (comp: VisualEditorComponent) => {
             console.log('当前拖拽的组件：', comp)
             const newComp = cloneDeep(comp)
             return createNewBlock(newComp)
         }
 
-        const log = (evt) => {
+        const log = (evt: Event) => {
             window.console.log('onChange:', evt)
         }
 
@@ -30,13 +30,13 @@ export default defineComponent({
                 <DraggableTransitionGroup
                     class={styles.listGroup}
                     v-model={baseWidgets.value}
-                    group={{ name: 'components', pull: 'clone', put: false }}
+                    group={{name: 'components', pull: 'clone', put: false}}
                     clone={cloneDog}
                     onChange={log}
                     itemKey={'key'}
                 >
                     {{
-                        item: ({ element }) => (
+                        item: ({element}) => (
                             <div class={styles.listGroupItem} data-label={element.label}>
                                 {element.preview()}
                             </div>
