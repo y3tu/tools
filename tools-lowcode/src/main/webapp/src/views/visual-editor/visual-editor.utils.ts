@@ -1,13 +1,15 @@
 import type {CSSProperties} from 'vue'
-import { inject, provide } from 'vue'
+import {inject, provide} from 'vue'
 import type {VisualEditorProps} from './visual-editor.props'
-import type { RequestEnum, ContentTypeEnum } from '@/enums/httpEnum'
+import type {RequestEnum, ContentTypeEnum} from '@/enums/httpEnum'
 import utils from '@/utils'
 import {useDotProp} from './hooks/useDotProp'
 //----------------------------------------数据-------------------------------------------------
 
 //总的数据集
 export interface VisualEditorModelValue {
+    //页面
+    page: VisualEditorPage
     /** 实体 */
     models: VisualEditorModel[]
     /** 动作 */
@@ -84,6 +86,7 @@ export interface VisualEditorPage {
     /** 当前页面的所有组件 */
     blocks: VisualEditorBlockData[]
 }
+
 //页面配置
 export interface PageConfig {
     /** 背景图片 */
@@ -257,7 +260,7 @@ export function createNewBlock(component: VisualEditorComponent): VisualEditorBl
         },
         hasResize: false,
         props: Object.keys(component.props || {}).reduce((prev, curr) => {
-            const { propObj, prop } = useDotProp(prev, curr)
+            const {propObj, prop} = useDotProp(prev, curr)
             if (component.props![curr]?.defaultValue) {
                 propObj[prop] = prev[curr] = component.props![curr]?.defaultValue
             }
@@ -283,11 +286,9 @@ export function createVisualEditorConfig() {
     return {
         componentModules,
         componentMap,
-        registry: <
-            _,
+        registry: <_,
             Props extends Record<string, VisualEditorProps> = {},
-            Model extends Record<string, string> = {}
-            >(
+            Model extends Record<string, string> = {}>(
             moduleName: keyof ComponentModules,
             key: string,
             component: {
@@ -305,7 +306,7 @@ export function createVisualEditorConfig() {
                 styles?: CSSProperties
             }
         ) => {
-            const comp = { ...component, key, moduleName }
+            const comp = {...component, key, moduleName}
             componentModules[moduleName].push(comp)
             componentMap[key] = comp
         }

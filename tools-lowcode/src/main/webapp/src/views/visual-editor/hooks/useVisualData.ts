@@ -1,4 +1,4 @@
-import {reactive,readonly, inject, computed} from 'vue'
+import {reactive, readonly, inject, computed} from 'vue'
 import type {InjectionKey} from 'vue'
 import type {
     VisualEditorPage,
@@ -32,6 +32,16 @@ const page = {
 }
 
 const defaultValue: VisualEditorModelValue = {
+    page: {
+        title: 'test',
+        path: '/testVisual',
+        config: {
+            bgColor: '',
+            bgImage: '',
+            keepAlive: false
+        },
+        blocks: []
+    },
     models: [], // 模型实体集合
     actions: {
         // 动作集合
@@ -48,14 +58,14 @@ const defaultValue: VisualEditorModelValue = {
 
 export const initVisualData = () => {
     const localData = JSON.parse(sessionStorage.getItem(localKey) as string)
-    const jsonData: VisualEditorModelValue = Object.keys(localData?.pages || {}).length
+    const jsonData: VisualEditorModelValue = Object.keys(localData?.page || {}).length
         ? localData
         : defaultValue
 
     const state: IState = reactive({
         jsonData,
-        currentPage: page,
-        currentBlock: page?.blocks?.find((item) => item.focus) ?? ({} as VisualEditorBlockData)
+        currentPage: jsonData.page,
+        currentBlock: jsonData.page?.blocks?.find((item) => item.focus) ?? ({} as VisualEditorBlockData)
     })
 
     // 设置当前被操作的组件
@@ -64,12 +74,12 @@ export const initVisualData = () => {
     }
 
     // 更新pages下面的blocks
-    const updatePageBlock = (path = '', blocks: VisualEditorBlockData[] = []) => {
-        state.jsonData.pages[path].blocks = blocks
+    const updatePageBlock = (blocks: VisualEditorBlockData[] = []) => {
+        state.jsonData.page.blocks = blocks
     }
 
-    return{
-        visualConfig:visualConfig,
+    return {
+        visualConfig: visualConfig,
         jsonData: readonly(state.jsonData), // 保护JSONData避免直接修改
         currentPage: computed(() => state.currentPage),
         currentBlock: computed(() => state.currentBlock),
